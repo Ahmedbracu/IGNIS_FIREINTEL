@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NASA IGNIS | Microgravity Fire Research Hub</title>
+  
+  <!-- Plus Jakarta Sans & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: {
+              50: '#FFFEFA',
+              100: '#FFFDF2',
+              200: '#FAF6EE',
+              300: '#F0EAD8',
+            },
+            popyellow: '#FFE600',
+            poppink: '#FF8FAB',
+            popgreen: '#D3F8E2',
+            popmint: '#A6F4C5',
+            poplavender: '#EEDBFF',
+            popblue: '#4D96FF',
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          boxShadow: {
+            'pop-sm': '2px 2px 0px #000000',
+            'pop': '4px 4px 0px #000000',
+            'pop-hover': '2px 2px 0px #000000',
+            'pop-lg': '6px 6px 0px #000000',
+            'pop-pink': '4px 4px 0px #FF8FAB',
+          }
+        },
+      },
+    };
+  </script>
+
+  <!-- React 18, Babel, Recharts CDNs -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+
+  <style>
+    body {
+      background-color: #FFFDF2;
+      color: #111111;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .pop-btn {
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pop-btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #000000 !important;
+    }
+    .pop-btn:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0px 0px 0px #000000 !important;
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #FAF6EE; }
+    ::-webkit-scrollbar-thumb { background: #111111; border-radius: 9999px; }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-popyellow selection:text-black">
+
+  <!-- Pastel Floating Bokeh Blobs -->
+  <div class="fixed -top-16 -left-16 w-80 h-80 rounded-full bg-pink-100/60 pointer-events-none blur-2xl z-0"></div>
+  <div class="fixed top-24 left-[15%] w-48 h-48 rounded-full bg-green-100/70 pointer-events-none blur-xl z-0"></div>
+  <div class="fixed top-1/3 -left-12 w-64 h-64 rounded-full bg-purple-100/60 pointer-events-none blur-2xl z-0"></div>
+  <div class="fixed -bottom-16 -right-16 w-96 h-96 rounded-full bg-emerald-100/60 pointer-events-none blur-3xl z-0"></div>
+  <div class="fixed top-1/2 right-[5%] w-56 h-56 rounded-full bg-yellow-100/70 pointer-events-none blur-2xl z-0"></div>
+
+  <div id="root" class="relative z-10"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+    const { 
+      ScatterChart, Scatter, XAxis, YAxis, ZAxis, 
+      CartesianGrid, Tooltip, ResponsiveContainer, Cell 
+    } = Recharts;
+
+    /* Dynamic Fire Flame Icon */
+    const FlameIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 23c-4.97 0-9-3.58-9-8 0-4.19 3.25-7.79 7.06-11.96.38-.41.97-.53 1.48-.28.51.25.79.79.7 1.35-.38 2.29.17 3.56 1.18 4.37 1.54 1.23 2.58 2.92 2.58 4.82 0 1.28-.46 2.44-1.22 3.37 2.37-1.14 4.02-3.53 4.2-6.31.04-.6.44-1.1 1.02-1.25.58-.15 1.18.12 1.46.66C22.42 11.66 23 13.73 23 15c0 4.42-4.03 8-11 8zm-1.87-11.53C7.26 14.7 6 16.29 6 18c0 2.76 2.69 5 6 5 2.15 0 4.05-.96 5.11-2.43-.88.27-1.82.35-2.78.2-2.18-.34-3.96-2.02-4.41-4.17-.33-1.57.12-3.14.92-4.46-.25-.26-.51-.51-.71-.67z" />
+      </svg>
+    );
+
+    /* Fire Blast Emblem Icon */
+    const FireBlastIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2L14.5 8.5L21 9L16 13.5L18 20L12 16.5L6 20L8 13.5L3 9L9.5 8.5L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        <circle cx="12" cy="12" r="3" fill="#FFE600" />
+      </svg>
+    );
+
+    const FireSparkleIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2c.5 3.5 2.5 5.5 6 6-3.5.5-5.5 2.5-6 6-.5-3.5-2.5-5.5-6-6 3.5-.5 5.5-2.5 6-6zM5 16c.3 2 1.3 3 3 3.3-1.7.3-2.7 1.3-3 3.3-.3-2-1.3-3-3-3.3 1.7-.3 2.7-1.3 3-3.3z" />
+      </svg>
+    );
+
+    const DropletIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
+      </svg>
+    );
+
+    const SunIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <circle cx="12" cy="12" r="5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+      </svg>
+    );
+
+    const SearchIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    );
+
+    const ExternalLinkIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    );
+
+    const ArrowRightIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      </svg>
+    );
+
+    const BotIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <rect x="3" y="11" width="18" height="10" rx="2" />
+        <circle cx="12" cy="5" r="2" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v4M8 16h0.01M16 16h0.01" />
+      </svg>
+    );
+
+    const WindIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2" />
+      </svg>
+    );
+
+    const ShieldAlertIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    );
+
+    const RocketIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12c-3.23.1-7.23 1.87-10.16 4.8m4 7.32l-4-4m-6.24 6.24c-1.56 1.56-4.1 1.56-5.66 0 0 0 1.56-4.1 3.12-5.66l2.54 2.54m0 0l3.12 3.12" />
+      </svg>
+    );
+
+    const TwitterIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+    );
+
+    const LinkedinIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.72a1.48 1.48 0 1 0 0 2.95 1.48 1.48 0 0 0 0-2.95Z"/>
+      </svg>
+    );
+
+    const GithubIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+      </svg>
+    );
+
+    const MailIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    );
+
+    const EXPERIMENTS_DATA = [
+      {
+        "id": "EXP-NASA-001",
+        "title": "BASS-II Opposed-Flow Flame Spread over PMMA Cylinders",
+        "mission_program": "BASS-II",
+        "facility_platform": "Microgravity Science Glovebox (MSG) / ISS",
+        "gravity_g": 0.0,
+        "oxygen_pct": 21.0,
+        "airflow_cms": 7.6,
+        "fuel_material": "PMMA Cylinder",
+        "flame_spread_rate_mms": 0.42,
+        "extinction_behavior": "Radiative quenching at low opposed flow velocities (<1.0 cm/s); blow-off limit at high flow",
+        "source_report": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5760683/",
+        "nasa_citation": "Olson, S. L. et al., 'The Effect of Gravity on Flame Spread over PMMA Cylinders', Scientific Reports"
+      },
+      {
+        "id": "EXP-NASA-002",
+        "title": "BASS Microgravity Flammability Limit of SIBAL Fabric",
+        "mission_program": "BASS",
+        "facility_platform": "Microgravity Science Glovebox (MSG) / ISS",
+        "gravity_g": 0.0,
+        "oxygen_pct": 18.0,
+        "airflow_cms": 5.0,
+        "fuel_material": "SIBAL Cloth (75% Cotton / 25% Fiberglass)",
+        "flame_spread_rate_mms": 0.85,
+        "extinction_behavior": "Flame tip quenching and low-oxygen radiative extinction below 18% O2",
+        "source_report": "https://science.nasa.gov/wp-content/uploads/2023/05/217_5dda37a2b088281953e769f275061ac8_MillerFletcherJ.pdf",
+        "nasa_citation": "Miller, F. J. & Fletcher, J., 'Topical: Spacecraft Materials Fire Safety', NASA Science"
+      },
+      {
+        "id": "EXP-NASA-003",
+        "title": "Saffire-I Large-Scale Spacecraft Fire Safety Test",
+        "mission_program": "Saffire",
+        "facility_platform": "Cygnus Resupply Spacecraft (Post-Deberth)",
+        "gravity_g": 0.0,
+        "oxygen_pct": 21.0,
+        "airflow_cms": 20.0,
+        "fuel_material": "SIBAL Fabric Card (0.4m x 0.94m)",
+        "flame_spread_rate_mms": 3.2,
+        "extinction_behavior": "Sustained upward flame spread across full sample length; self-extinguished when forced airflow stopped",
+        "source_report": "https://ntrs.nasa.gov/api/citations/20150022421/downloads/20150022421.pdf",
+        "nasa_citation": "Urban, D. et al., 'Buoyant Effects on Flammability of Samples for Saffire', NASA NTRS"
+      },
+      {
+        "id": "EXP-NASA-004",
+        "title": "Saffire-IV Elevated Oxygen and Thick Material Combustion",
+        "mission_program": "Saffire",
+        "facility_platform": "Cygnus PCM Spacecraft",
+        "gravity_g": 0.0,
+        "oxygen_pct": 30.0,
+        "airflow_cms": 25.0,
+        "fuel_material": "Thick PMMA Slabs and Cotton Blends",
+        "flame_spread_rate_mms": 4.8,
+        "extinction_behavior": "Vigorous sooting diffusion flame; required active air filtration post-combustion",
+        "source_report": "https://ttu-ir.tdl.org/server/api/core/bitstreams/4632e331-7335-4aa0-8cb7-b122177e708d/content",
+        "nasa_citation": "NASA / TTU Research, 'Evaluation of Combustion Products from Large-Scale Fires (Saffire-IV/V)'"
+      },
+      {
+        "id": "EXP-NASA-005",
+        "title": "FLEX-2 Droplet Cool Flame and Radiative Extinction",
+        "mission_program": "FLEX",
+        "facility_platform": "MDCA / ISS Rack",
+        "gravity_g": 0.0,
+        "oxygen_pct": 21.0,
+        "airflow_cms": 0.0,
+        "fuel_material": "n-Heptane Droplet (3.0mm)",
+        "flame_spread_rate_mms": 0.78,
+        "extinction_behavior": "Two-stage extinction: hot spherical flame extinguished, followed by invisible cool flame regime",
+        "source_report": "https://www.nasa.gov/wp-content/uploads/2025/07/flame-extinguishment-experiment-flex.pdf",
+        "nasa_citation": "Nayagam, V., et al., 'Flame Extinguishment Experiment (FLEX-2)', NASA Glenn Research"
+      },
+      {
+        "id": "EXP-NASA-006",
+        "title": "FLEX Iso-Octane / Heptane Pulsating Flame Oscillations",
+        "mission_program": "FLEX",
+        "facility_platform": "MDCA / ISS CIR",
+        "gravity_g": 0.0,
+        "oxygen_pct": 21.0,
+        "airflow_cms": 0.0,
+        "fuel_material": "50/50 Iso-Octane / n-Heptane",
+        "flame_spread_rate_mms": 0.65,
+        "extinction_behavior": "Pulsating jellyfish-like flame oscillations near extinction limit due to differential vaporization",
+        "source_report": "https://www.youtube.com/watch?q=qQQ1OHW1_F4",
+        "nasa_citation": "NASA Glenn Research Center / CIR Team, 'FLEX-2 Microgravity Observations on ISS'"
+      },
+      {
+        "id": "EXP-NASA-007",
+        "title": "SoFIE-MIST PMMA Flammability under External Radiant Heating",
+        "mission_program": "SoFIE",
+        "facility_platform": "CIR / ISS",
+        "gravity_g": 0.0,
+        "oxygen_pct": 18.0,
+        "airflow_cms": 10.0,
+        "fuel_material": "PMMA Rod (1.9 kW/m² Radiant Heat)",
+        "flame_spread_rate_mms": 1.1,
+        "extinction_behavior": "Limiting Oxygen Concentration (LOC) shifted downward by external radiant flux; extinction delayed",
+        "source_report": "https://ttu-ir.tdl.org/server/api/core/bitstreams/7828b281-8305-4db0-b4ea-b161c362b278/content",
+        "nasa_citation": "NASA SoFIE Science Team, 'LOC of Burning PMMA Cylinders under Radiant Heating'"
+      }
+    ];
+
+    function calculateRisk(item) {
+      const score = (item.oxygen_pct * 0.12) + (item.flame_spread_rate_mms * 1.3) + (item.airflow_cms * 0.03);
+      return Math.min(10, Math.max(1, parseFloat(score.toFixed(1))));
+    }
+
+    function getPopStyle(score) {
+      if (score >= 6.5) return { 
+        badgeBg: 'bg-rose-100 text-black border-2 border-black shadow-pop-sm', 
+        tag: 'CRITICAL',
+        chartFill: '#FF4D6D' 
+      };
+      if (score >= 4.0) return { 
+        badgeBg: 'bg-popyellow text-black border-2 border-black shadow-pop-sm', 
+        tag: 'ELEVATED',
+        chartFill: '#FFE600' 
+      };
+      return { 
+        badgeBg: 'bg-popmint text-black border-2 border-black shadow-pop-sm', 
+        tag: 'NOMINAL',
+        chartFill: '#2EC4B6' 
+      };
+    }
+
+    function Header({ filter, setFilter, onTriggerAi }) {
+      return (
+        <header className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 pb-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl font-black tracking-tight text-black flex items-center gap-1.5">
+                <FlameIcon className="w-7 h-7 text-black fill-popyellow stroke-[2.5]" />
+                IGNIS.
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-black bg-white shadow-pop-sm text-xs font-bold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                NASA Microgravity SFS
+              </span>
+            </div>
+            <p className="text-xs font-semibold text-slate-700">
+              Exploration Spacecraft Materials Fire Safety Intelligence Hub
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border-2 border-black shadow-pop-sm text-xs font-bold">
+              {['ALL', 'Saffire', 'BASS', 'FLEX', 'SoFIE'].map((prog) => (
+                <button
+                  key={prog}
+                  onClick={() => setFilter(prog)}
+                  className={`px-3 py-1 rounded-full transition-all ${
+                    filter === prog 
+                      ? 'bg-black text-white' 
+                      : 'text-black hover:bg-cream-200'
+                  }`}
+                >
+                  {prog}
+                </button>
+              ))}
+            </div>
+            
+            <button 
+              onClick={onTriggerAi}
+              className="pop-btn px-5 py-2.5 rounded-full bg-popyellow text-black font-extrabold text-xs border-2 border-black shadow-pop flex items-center gap-2"
+            >
+              <BotIcon className="w-4 h-4" />
+              <span>AI Synthesis</span>
+              <ArrowRightIcon className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </header>
+      );
+    }
+
+    function HeroSection({ selectedExp, setQuestion }) {
+      return (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 items-center bg-white p-6 md:p-8 rounded-3xl border-2 border-black shadow-pop-lg">
+          <div className="lg:col-span-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border-2 border-black bg-popgreen shadow-pop-sm text-xs font-bold mb-3">
+              <RocketIcon className="w-3.5 h-3.5 text-emerald-800" />
+              <span>Synthesizing Microgravity Combustion Archives</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight leading-tight mb-3">
+              Fire behaves differently when <span className="bg-popyellow px-2 py-0.5 rounded-md border-2 border-black inline-block shadow-pop-sm">gravity is zero.</span>
+            </h2>
+            <p className="text-sm text-slate-700 font-medium max-w-2xl leading-relaxed mb-4">
+              Without buoyant buoyancy convection, flames do not rise. They form spherical diffuse pockets, emit invisible cool flames, and rely entirely on ventilation fans to sustain propagation or extinguish.
+            </p>
+            
+            <div className="flex flex-wrap items-center gap-3">
+              <a 
+                href="#dataset-matrix"
+                className="pop-btn px-5 py-2.5 rounded-full bg-popyellow border-2 border-black shadow-pop text-xs font-black text-black inline-flex items-center gap-2"
+              >
+                <FireSparkleIcon className="w-4 h-4" />
+                <span>Explore 7 Test Datasets</span>
+              </a>
+              <button 
+                onClick={() => setQuestion("What is the Limiting Oxygen Concentration?")}
+                className="pop-btn px-5 py-2.5 rounded-full bg-white border-2 border-black shadow-pop text-xs font-black text-black flex items-center gap-1.5"
+              >
+                <span>View Flammability Limits</span>
+                <ArrowRightIcon className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="lg:col-span-4 flex justify-center">
+            <div className="relative">
+              <div className="absolute -bottom-2 -right-2 w-full h-full bg-poppink rounded-2xl border-2 border-black"></div>
+              <div className="relative bg-black text-white p-5 rounded-2xl border-2 border-black shadow-pop w-64 text-center">
+                <div className="text-[10px] font-mono text-popyellow tracking-widest uppercase mb-1">Active Benchmark</div>
+                <div className="text-3xl font-black mb-1 flex items-center justify-center gap-1">
+                  {selectedExp.flame_spread_rate_mms} 
+                  <span className="text-xs font-normal text-slate-300">mm/s</span>
+                </div>
+                <div className="text-xs font-bold text-slate-300 truncate mb-3">{selectedExp.fuel_material}</div>
+                <div className="inline-block bg-popyellow text-black text-[11px] font-extrabold px-3 py-1 rounded-full border border-black">
+                  {selectedExp.mission_program} Platform
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function ScatterPlotCard({ chartData, setSelectedExp }) {
+      return (
+        <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+            <div>
+              <h3 className="text-base font-extrabold text-black flex items-center gap-2">
+                <WindIcon className="w-4 h-4 text-black" />
+                Combustion Propagation Matrix
+              </h3>
+              <p className="text-xs font-semibold text-slate-600">Airflow Velocity (cm/s) vs. Flame Spread Rate (mm/s)</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-popmint border border-black">Low Risk</span>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-popyellow border border-black">Elevated</span>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-200 border border-black">Critical</span>
+            </div>
+          </div>
+
+          <div className="h-64 w-full bg-cream-100 rounded-2xl p-2 border-2 border-black">
+            <ResponsiveContainer width="100%" height="100%">
+              <ScatterChart margin={{ top: 15, right: 20, bottom: 20, left: -10 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#DDD9CD" />
+                <XAxis 
+                  type="number" 
+                  dataKey="x" 
+                  name="Flow" 
+                  unit=" cm/s" 
+                  stroke="#111" 
+                  fontSize={11} 
+                  fontWeight={700}
+                  domain={[0, 30]} 
+                />
+                <YAxis 
+                  type="number" 
+                  dataKey="y" 
+                  name="Spread" 
+                  unit=" mm/s" 
+                  stroke="#111" 
+                  fontSize={11} 
+                  fontWeight={700}
+                  domain={[0, 5]} 
+                />
+                <ZAxis type="number" dataKey="z" range={[120, 340]} />
+                <Tooltip 
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const point = payload[0].payload.item;
+                      return (
+                        <div className="bg-white border-2 border-black p-3 rounded-xl shadow-pop text-xs">
+                          <div className="font-extrabold text-black">{point.title}</div>
+                          <div className="text-slate-700 mt-1">Airflow: <strong>{point.airflow_cms} cm/s</strong></div>
+                          <div className="text-slate-700">Spread: <strong>{point.flame_spread_rate_mms} mm/s</strong></div>
+                          <div className="text-slate-700">O₂ Level: <strong>{point.oxygen_pct}%</strong></div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }} 
+                />
+                <Scatter 
+                  data={chartData} 
+                  onClick={(node) => setSelectedExp(node.item)}
+                  cursor="pointer"
+                >
+                  {chartData.map((entry, index) => {
+                    const style = getPopStyle(entry.z);
+                    return (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={style.chartFill} 
+                        stroke="#000000" 
+                        strokeWidth={2} 
+                      />
+                    );
+                  })}
+                </Scatter>
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      );
+    }
+
+    function ExperimentList({ filteredList, search, setSearch, selectedExp, setSelectedExp }) {
+      return (
+        <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop flex-1">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+            <h3 className="text-base font-extrabold text-black">
+              Experimental Runs ({filteredList.length})
+            </h3>
+            <div className="relative w-full sm:w-60">
+              <input
+                type="text"
+                placeholder="Search material or test..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="bg-cream-100 border-2 border-black rounded-full pl-9 pr-4 py-1.5 text-xs text-black placeholder-slate-500 font-bold outline-none focus:bg-white w-full shadow-pop-sm"
+              />
+              <SearchIcon className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-600" />
+            </div>
+          </div>
+
+          <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+            {filteredList.map((exp) => {
+              const risk = calculateRisk(exp);
+              const pop = getPopStyle(risk);
+              const isSelected = selectedExp.id === exp.id;
+              return (
+                <div
+                  key={exp.id}
+                  onClick={() => setSelectedExp(exp)}
+                  className={`p-4 rounded-2xl border-2 border-black cursor-pointer pop-btn flex items-center justify-between gap-3 ${
+                    isSelected 
+                      ? 'bg-popyellow shadow-pop' 
+                      : 'bg-white shadow-pop-sm hover:bg-cream-100'
+                  }`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded bg-black text-white">
+                        {exp.id}
+                      </span>
+                      <span className="text-xs font-extrabold text-black truncate">
+                        {exp.title}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-800 font-semibold truncate">
+                      {exp.fuel_material} · {exp.oxygen_pct}% O₂ · {exp.airflow_cms} cm/s
+                    </p>
+                  </div>
+
+                  <span className={`text-[10px] font-black px-2.5 py-1 rounded-full whitespace-nowrap ${pop.badgeBg}`}>
+                    {pop.tag}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    function DossierCard({ selectedExp }) {
+      return (
+        <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop">
+          <div className="flex items-center justify-between border-b-2 border-black pb-3 mb-3">
+            <span className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-1.5">
+              <ShieldAlertIcon className="w-4 h-4 text-black" />
+              Active Specimen
+            </span>
+            <span className="text-xs font-mono font-bold bg-cream-200 px-2 py-0.5 rounded border border-black">
+              {selectedExp.id}
+            </span>
+          </div>
+
+          <h4 className="text-base font-extrabold text-black mb-3">{selectedExp.title}</h4>
+          
+          <div className="bg-cream-100 p-4 rounded-2xl border-2 border-black space-y-2 text-xs font-medium text-slate-800 mb-4">
+            <div><strong>Fuel:</strong> {selectedExp.fuel_material}</div>
+            <div><strong>Platform:</strong> {selectedExp.facility_platform}</div>
+            <div><strong>Extinction Behavior:</strong> {selectedExp.extinction_behavior}</div>
+          </div>
+
+          <a 
+            href={selectedExp.source_report} 
+            target="_blank" 
+            rel="noreferrer"
+            className="pop-btn inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-full bg-black text-white text-xs font-extrabold shadow-pop"
+          >
+            <span>Open Official NASA Research Report</span>
+            <ExternalLinkIcon className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      );
+    }
+
+    function AiCopilotCard({ aiNote, question, setQuestion, handleAsk, triggerMove }) {
+      return (
+        <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop flex-1 flex flex-col">
+          <div className="flex items-center gap-2 mb-3 pb-3 border-b-2 border-black">
+            <BotIcon className="w-5 h-5 text-black" />
+            <h4 className="text-sm font-black text-black uppercase tracking-wide">
+              NASA AI Synthesis Agent
+            </h4>
+          </div>
+
+          {/* Copilot Bubble */}
+          <div className="flex-1 bg-cream-100 rounded-2xl p-4 border-2 border-black mb-3 overflow-y-auto">
+            <h5 className="text-xs font-black text-black mb-1.5">{aiNote.headline}</h5>
+            <p className="text-xs text-slate-800 font-medium leading-relaxed mb-3">{aiNote.body}</p>
+            <div className="pt-2 border-t border-black/20">
+              <span className="text-[10px] font-black text-slate-600 uppercase tracking-wider block mb-1">Source Citation</span>
+              <p className="text-[11px] font-mono font-bold text-slate-900">{aiNote.citation}</p>
+            </div>
+          </div>
+
+          {/* Fire-type move SVG Pills */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            <button 
+              onClick={() => triggerMove("flamethrower")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-popyellow border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <FlameIcon className="w-3.5 h-3.5 text-black" />
+              <span>Flamethrower</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("overheat")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-rose-200 border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <FireBlastIcon className="w-3.5 h-3.5 text-black" />
+              <span>Overheat</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("ember")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-amber-200 border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <FireSparkleIcon className="w-3.5 h-3.5 text-amber-900" />
+              <span>Ember</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("cool flames")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-poplavender border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <DropletIcon className="w-3.5 h-3.5 text-indigo-700" />
+              <span>Cool Flames</span>
+            </button>
+          </div>
+
+          {/* Question Form */}
+          <form onSubmit={(e) => handleAsk(e, question)} className="flex items-center gap-2">
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask about microgravity combustion..."
+              className="flex-1 bg-cream-100 border-2 border-black rounded-full px-4 py-2 text-xs font-bold text-black placeholder-slate-500 outline-none focus:bg-white shadow-pop-sm"
+            />
+            <button
+              type="submit"
+              className="pop-btn bg-popyellow text-black px-5 py-2 rounded-full text-xs font-black border-2 border-black shadow-pop flex items-center gap-1"
+            >
+              <span>Ask</span>
+            </button>
+          </form>
+        </div>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 pt-6 border-t-2 border-black/10">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-black">NASA IGNIS SFS Project</span>
+            <span className="text-xs text-slate-500">·</span>
+            <span className="text-xs text-slate-600 font-medium">BASS, Saffire, FLEX-2, SoFIE/MIST Missions</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="X (Twitter)">
+              <TwitterIcon className="w-3.5 h-3.5 text-black" />
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="LinkedIn">
+              <LinkedinIcon className="w-3.5 h-3.5 text-black" />
+            </a>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="GitHub">
+              <GithubIcon className="w-3.5 h-3.5 text-black" />
+            </a>
+            <a href="mailto:contact@nasa.gov" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="Contact Email">
+              <MailIcon className="w-3.5 h-3.5 text-black" />
+            </a>
+          </div>
+        </footer>
+      );
+    }
+
+    function App() {
+      const [search, setSearch] = useState('');
+      const [filter, setFilter] = useState('ALL');
+      const [selectedExp, setSelectedExp] = useState(EXPERIMENTS_DATA[0]);
+      const [question, setQuestion] = useState('');
+      const [aiNote, setAiNote] = useState({
+        headline: "NASA Fire Safety Telemetry Initialized",
+        body: "Microgravity eliminates buoyant upward drafting. Fires burn spherically and rely directly on spacecraft ventilation speeds. Select any mission run or ask a question below.",
+        citation: "NASA Glenn Research Center — Microgravity Combustion Database"
+      });
+
+      const filteredList = useMemo(() => {
+        return EXPERIMENTS_DATA.filter(item => {
+          const matchesSearch = item.fuel_material.toLowerCase().includes(search.toLowerCase()) ||
+                                item.title.toLowerCase().includes(search.toLowerCase());
+          const matchesFilter = filter === 'ALL' || item.mission_program.includes(filter);
+          return matchesSearch && matchesFilter;
+        }).sort((a, b) => calculateRisk(b) - calculateRisk(a));
+      }, [search, filter]);
+
+      const chartData = useMemo(() => {
+        return filteredList.map(item => ({
+          x: item.airflow_cms,
+          y: item.flame_spread_rate_mms,
+          z: calculateRisk(item),
+          item: item
+        }));
+      }, [filteredList]);
+
+      const processQuery = (queryText) => {
+        const q = queryText.toLowerCase();
+        if (!q.trim()) return;
+
+        if (q.includes("flamethrower")) {
+          setAiNote({
+            headline: "Flamethrower Hydrodynamics in Zero-G",
+            body: "Under forced airflow (15–25 cm/s), low-gravity flames exhibit jet-like momentum similar to a Flamethrower, forming extended reaction zones that bypass self-extinction limits.",
+            citation: "NASA Microgravity Fire Safety — Forced Convection Jet Analysis"
+          });
+        } else if (q.includes("overheat") || q.includes("thermal")) {
+          setAiNote({
+            headline: "Overheat Thermal Accumulation",
+            body: "Without buoyant convection to carry heat away, non-vented materials undergo rapid localized thermal buildup ('Overheat'), causing sudden off-gassing and intense flammability spikes.",
+            citation: "NASA Spacecraft Fire Safety Handbook — Thermal Runaway Studies"
+          });
+        } else if (q.includes("ember") || q.includes("smolder")) {
+          setAiNote({
+            headline: "Ember Smoldering Dynamics",
+            body: "Microgravity embers can stay hot for extended periods in low-oxygen environments. When HVAC air recirculation resumes, dormant embers rapidly reignite into active flames.",
+            citation: "ISS Microgravity Science Glovebox — Smoldering Solids Research"
+          });
+        } else if (q.includes("cool") || q.includes("droplet") || q.includes("flex")) {
+          setAiNote({
+            headline: "Low-Temperature Cool Flames Detected",
+            body: "In the FLEX-2 droplet tests, hot soot extinction was followed by an invisible low-temperature combustion regime. This produces significant carbon monoxide with zero visible light in microgravity.",
+            citation: "NASA Glenn Research Center / FLEX-2 MDCA Experiment"
+          });
+        } else if (q.includes("saffire") || q.includes("large") || q.includes("speed")) {
+          setAiNote({
+            headline: "Forced Convection Feeds Flame Fronts",
+            body: "Saffire-I through IV proved that while large fabric burns extinguish when airflow stops, forced velocities of 20-25 cm/s supply ample oxidizer, driving propagation speeds up to 4.8 mm/s.",
+            citation: "Urban, D. et al., Saffire Series, NASA NTRS"
+          });
+        } else if (q.includes("pmma") || q.includes("radiation") || q.includes("sofie")) {
+          setAiNote({
+            headline: "Radiative Flux Weakens Extinction Limits",
+            body: "SoFIE-MIST confirmed that external radiant heating (1.9 kW/m²) forces PMMA plastics to burn at oxygen levels as low as 18%, counteracting the quenching typically caused by microgravity.",
+            citation: "NASA SoFIE Science Team / ISS CIR Facility"
+          });
+        } else {
+          setAiNote({
+            headline: "Convection-Dominant Extinction",
+            body: `Analyzing records for "${queryText}": Because buoyancy is zero in microgravity, flame persistence and smoke accumulation depend directly on HVAC airflow velocity.`,
+            citation: filteredList[0]?.nasa_citation || "NASA Materials & Fire Safety Group"
+          });
+        }
+      };
+
+      const handleAsk = (e, customQuery) => {
+        if (e) e.preventDefault();
+        const queryToRun = customQuery || question;
+        processQuery(queryToRun);
+        setQuestion('');
+      };
+
+      const triggerMove = (moveName) => {
+        setQuestion(moveName);
+        processQuery(moveName);
+      };
+
+      return (
+        <div className="max-w-[1340px] mx-auto px-4 py-8 md:px-8">
+          <Header 
+            filter={filter} 
+            setFilter={setFilter} 
+            onTriggerAi={() => {
+              setAiNote({
+                headline: "Spacecraft Fire Safety Assessment",
+                body: "In microgravity environments, forced convection from HVAC systems dictates flame spread rates. Fire detection relies heavily on early optical and carbon monoxide sensors rather than traditional ceiling smoke detectors.",
+                citation: "NASA Spacecraft Fire Safety Operations Guide"
+              });
+            }}
+          />
+
+          <HeroSection 
+            selectedExp={selectedExp} 
+            setQuestion={setQuestion} 
+          />
+
+          <div id="dataset-matrix" className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-span-7 flex flex-col gap-6">
+              <AiCopilotCard 
+                aiNote={aiNote}
+                question={question}
+                setQuestion={setQuestion}
+                handleAsk={handleAsk}
+                triggerMove={triggerMove}
+              />
+              <ScatterPlotCard 
+                chartData={chartData} 
+                setSelectedExp={setSelectedExp} 
+              />
+            </div>
+
+            <div className="col-span-12 lg:col-span-5 flex flex-col gap-6">
+              <DossierCard selectedExp={selectedExp} />
+              <ExperimentList 
+                filteredList={filteredList}
+                search={search}
+                setSearch={setSearch}
+                selectedExp={selectedExp}
+                setSelectedExp={setSelectedExp}
+              />
+            </div>
+          </div>
+
+          <Footer />
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
