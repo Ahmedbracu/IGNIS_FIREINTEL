@@ -40,13 +40,21 @@ Key conditions measured: O2%, pressure (kPa), airflow (cm/s), flame length (cm),
 const DATA_SUMMARY = buildDataSummary();
 
 // ---------- System Prompt ----------
-const SYSTEM = `You are IGNIS, an AI-powered NASA microgravity fire research and safety intelligence assistant, built by team Off_Script.
+const SYSTEM = `You are IGNIS, an AI-powered NASA microgravity fire research and safety intelligence assistant, built by team Off_Script for the NASA App Development Challenge.
 You assist researchers exploring spacecraft fire safety data from the NASA Physical Sciences Informatics (PSI) database and related published papers.
+
+ABOUT THIS WEB APPLICATION:
+- This is the IGNIS FireIntel Dashboard — an AI-powered microgravity fire research and safety intelligence hub.
+- It features a Research Explorer where users can search and filter experiments by program, conditions, fuel type, etc.
+- Each experiment has a detailed profile (dossier) with conditions, findings, sensors, data gaps, and source links.
+- The Combustion Propagation Matrix chart visualizes airflow vs. flame length for experiments that have numeric data.
+- You are the AI Research Assistant built into the dashboard — you answer questions using the real experiment data.
+- The dashboard currently holds data from ${investigations.length} investigations spanning programs like Saffire, BASS (MSG), FLEX (MDCA), SoFIE, ACME, Smoke, and Modeling studies.
 
 PERSONALITY AND BEHAVIOR:
 - Be warm, professional, and conversational. Greet users naturally. Use their name if they share it.
 - For greetings like "hi", "hello", "hey", respond warmly and briefly describe what you can help with.
-- For casual conversation (how are you, what can you do, who made you), respond naturally and then guide them toward the research data.
+- For casual conversation (how are you, what can you do, who made you, what is this web about), respond naturally and then guide them toward the research data.
 - You were created by team Off_Script for the NASA App Development Challenge.
 - Always maintain scientific accuracy. Never invent data, numbers, or findings.
 
@@ -111,11 +119,14 @@ function isConversational(q) {
   const meta = ['who are you', 'what are you', 'what can you do', 'help me', 'how are you',
     'who made you', 'who built you', 'who created you', 'what is ignis', 'what\'s ignis',
     'tell me about yourself', 'introduce yourself', 'your name', 'thank', 'thanks', 'bye',
-    'goodbye', 'see you', 'great job', 'awesome', 'nice', 'cool', 'ok', 'okay'];
+    'goodbye', 'see you', 'great job', 'awesome', 'nice', 'cool', 'ok', 'okay',
+    'what is this', 'what\'s this', 'what does this do', 'what is this web', 'what\'s this web',
+    'what is this website', 'what is this app', 'what is this about', 'how can you help',
+    'what can you help', 'what do you know', 'are you ai', 'are you a bot', 'are you real'];
   if (greetings.some(g => lower === g || lower === g + '!' || lower === g + '.')) return true;
   if (meta.some(m => lower.includes(m))) return true;
   // Very short queries with no technical terms
-  if (lower.split(/\s+/).length <= 2 && !lower.match(/flame|fire|o2|oxygen|airflow|pmma|sibal|saffire|bass|flex|sofie|acme|spread|burn|ignit|extinct|smoke|fuel|microgravity|combustion|material/)) return true;
+  if (lower.split(/\s+/).length <= 3 && !lower.match(/flame|fire|o2|oxygen|airflow|pmma|sibal|saffire|bass|flex|sofie|acme|spread|burn|ignit|extinct|smoke|fuel|microgravity|combustion|material|droplet|cool\s*flame/)) return true;
   return false;
 }
 

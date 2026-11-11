@@ -268,7 +268,8 @@
     }
 
     function hasNumericData(item) {
-      return item.oxygen_pct != null || item.airflow_cms != null || item.flame_spread_rate_mms != null;
+      // Both axes must be present to plot a meaningful point
+      return item.airflow_cms != null && item.airflow_cms > 0 && item.flame_spread_rate_mms != null && item.flame_spread_rate_mms > 0;
     }
 
     function getPopStyle(score) {
@@ -409,7 +410,16 @@
             </div>
           </div>
 
-          <div className="h-64 w-full bg-cream-100 rounded-2xl p-2 border-2 border-black">
+          <div className="h-64 w-full bg-cream-100 rounded-2xl p-2 border-2 border-black relative">
+            {chartData.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <WindIcon className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                  <p className="text-sm font-bold text-slate-500">No numeric flow/flame data for this filter</p>
+                  <p className="text-xs text-slate-400 mt-1">Only Saffire experiments currently have airflow and flame-spread measurements. Try selecting "ALL" or "Saffire".</p>
+                </div>
+              </div>
+            ) : (
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 15, right: 20, bottom: 20, left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#DDD9CD" />
@@ -431,7 +441,7 @@
                   stroke="#111" 
                   fontSize={11} 
                   fontWeight={700}
-                  domain={[0, 6]} 
+                  domain={[0, 12]} 
                 />
                 <ZAxis type="number" dataKey="z" range={[120, 340]} />
                 <Tooltip 
@@ -442,7 +452,7 @@
                         <div className="bg-white border-2 border-black p-3 rounded-xl shadow-pop text-xs">
                           <div className="font-extrabold text-black">{point.title}</div>
                           <div className="text-slate-700 mt-1">Airflow: <strong>{point.airflow_cms} cm/s</strong></div>
-                          <div className="text-slate-700">Spread: <strong>{point.flame_spread_rate_mms} mm/s</strong></div>
+                          <div className="text-slate-700">Flame Length: <strong>{point.flame_spread_rate_mms} cm</strong></div>
                           <div className="text-slate-700">O₂ Level: <strong>{point.oxygen_pct}%</strong></div>
                         </div>
                       );
@@ -469,6 +479,7 @@
                 </Scatter>
               </ScatterChart>
             </ResponsiveContainer>
+            )}
           </div>
         </div>
       );
@@ -671,7 +682,7 @@
         if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
       }, [chatMessages]);
       return (
-        <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop flex-1 flex flex-col">
+        <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop flex flex-col">
           <div className="flex items-center justify-between mb-3 pb-3 border-b-2 border-black">
             <div className="flex items-center gap-2">
               <BotIcon className="w-5 h-5 text-black" />
@@ -686,8 +697,8 @@
             )}
           </div>
 
-          {/* Chat Messages */}
-          <div className="flex-1 bg-cream-100 rounded-2xl p-4 border-2 border-black mb-3 overflow-y-auto max-h-[340px] space-y-3">
+          {/* Chat Messages — shrinks to fit content, scrolls when it gets long */}
+          <div className="bg-cream-100 rounded-2xl p-4 border-2 border-black mb-3 overflow-y-auto space-y-3" style={{ maxHeight: chatMessages.length <= 2 ? 'none' : '340px' }}>
             {chatMessages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs font-medium leading-relaxed ${
@@ -833,7 +844,7 @@
           const q = search.toLowerCase();
           const matchesSearch = fuel.includes(q) || title.includes(q);
           const prog = item.mission_program || item.prog || '';
-          const matchesFilter = filter === 'ALL' || prog.toLowerCase().includes(filter.toLowerCase());
+          const matchesFilter = filter === 'ALL' || prog === filter;
           return matchesSearch && matchesFilter;
         }).sort((a, b) => calculateRisk(b) - calculateRisk(a));
       }, [experiments, search, filter]);
@@ -846,6 +857,168 @@
           item: item
         }));
       }, [filteredList]);
+
+      // ---------- Smart local search for offline fallback ----------
+      function localSearch(q, exps) {
+        const lower = q.toLowerCase();
+        const tokens = lower.match(/[a-z0-9]+/g) || [];
+        
+        // Score each experiment by keyword matches
+        const scored = exps.map(exp => {
+          const blob = [
+            exp.id, exp.title, exp.mission_program, exp.fuel_material,
+            exp.extinction_behavior, exp.summary, exp.hardware,
+            exp.fire_relevance, exp.fuel_state,
+            ...(exp.key_findings || []),
+            ...(exp.tags || []).map(t => t.replace(/_/g, ' ')),
+            ...(exp.data_gaps || [])
+          ].filter(Boolean).join(' ').toLowerCase();
+          
+          let score = 0;
+          for (const tok of tokens) {
+            if (blob.includes(tok)) score++;
+          }
+          // Boost direct ID match
+          if (lower.includes(exp.id.toLowerCase())) score += 10;
+          return { exp, score };
+        }).filter(s => s.score > 0).sort((a, b) => b.score - a.score);
+        
+        return scored.slice(0, 5).map(s => s.exp);
+      }
+
+      function buildLocalAnswer(q, exps) {
+        const lower = q.toLowerCase();
+        
+        // Greetings
+        if (/^(hi|hello|hey|howdy|good\s|yo|hola|greetings|namaste|assalamu|salam)/i.test(lower.trim())) {
+          return {
+            text: `Hello! 👋 I'm IGNIS, your AI-powered microgravity fire research assistant, built by team Off_Script. I have access to ${exps.length} investigations spanning programs like Saffire, BASS, FLEX, SoFIE, and ACME.\n\nI can help you explore specific experiments, compare fire behavior under different conditions, or explain microgravity combustion concepts. What would you like to know?`,
+            sources: []
+          };
+        }
+
+        // Meta questions
+        if (lower.includes('who are you') || lower.includes('what are you') || lower.includes('what is ignis') || lower.includes("what's ignis") || lower.includes('introduce yourself') || lower.includes('your name')) {
+          return {
+            text: `I'm IGNIS, an AI-powered NASA microgravity fire research and safety intelligence assistant. I was built by team Off_Script for the NASA App Development Challenge.\n\nI have access to ${exps.length} investigations from programs including Saffire (large-scale spacecraft fire tests), BASS (burning and suppression of solids), FLEX (droplet combustion and cool flames), SoFIE (solid fuel ignition and extinction), ACME (advanced combustion on the ISS), and Smoke (smoke detection research).\n\nI can help you search experiments, compare conditions, and understand fire behavior in microgravity. What interests you?`,
+            sources: []
+          };
+        }
+
+        if (lower.includes('what can you do') || lower.includes('help me') || lower.includes('how can you help')) {
+          return {
+            text: `Here's what I can help you with:\n\n• Search and explore ${exps.length} microgravity fire research investigations\n• Explain experiment conditions — oxygen levels, airflow speeds, fuel types, and flame behavior\n• Compare different experiments (e.g., Saffire-IV vs. Saffire-V)\n• Discuss how fire behaves differently in zero gravity — cool flames, flame spread, extinction\n• Provide findings with source references and citations\n\nTry asking me about a specific experiment, program, or concept!`,
+            sources: []
+          };
+        }
+
+        if (lower.includes('how are you') || lower.includes('sup') || lower.includes("what's up")) {
+          return {
+            text: `I'm doing great, thanks for asking! I'm ready to help you explore microgravity fire safety research. Got any questions about spacecraft combustion experiments?`,
+            sources: []
+          };
+        }
+
+        if (lower.includes('thank') || lower.includes('awesome') || lower.includes('great job') || lower.includes('nice') || lower.includes('cool')) {
+          return {
+            text: `You're welcome! Happy to help. Feel free to ask me anything else about microgravity fire research. 🔥`,
+            sources: []
+          };
+        }
+
+        if (lower.includes('bye') || lower.includes('goodbye') || lower.includes('see you')) {
+          return {
+            text: `Goodbye! Feel free to come back anytime you want to explore fire safety research. Stay safe! 👋`,
+            sources: []
+          };
+        }
+
+        if (lower.includes('who made you') || lower.includes('who built you') || lower.includes('who created you')) {
+          return {
+            text: `I was created by team Off_Script for the NASA App Development Challenge. Our mission is to make microgravity fire safety research accessible to researchers and engineers working on future spacecraft and habitats.`,
+            sources: []
+          };
+        }
+
+        // Research questions — search through data
+        const hits = localSearch(q, exps);
+        
+        if (hits.length === 0) {
+          // Still try to give a helpful response about general concepts
+          if (lower.includes('microgravity') || lower.includes('zero gravity') || lower.includes('space')) {
+            return {
+              text: `In microgravity, fire behaves very differently than on Earth. Without buoyancy-driven convection, flames don't rise — instead they form spherical shapes around their fuel source. This changes everything about how fires spread, how hot they get, and how to extinguish them.\n\nOur database covers ${exps.length} investigations studying these phenomena. The Saffire program conducted the first large-scale fire tests on uncrewed Cygnus spacecraft, FLEX studied cool flames in droplet combustion, and SoFIE examines ignition and extinction of solid fuels.\n\nWant to dive into a specific program or experiment?`,
+              sources: []
+            };
+          }
+          return {
+            text: `I searched our ${exps.length} investigations but couldn't find a strong match for that specific query. Here are some topics I can help with:\n\n• Saffire experiments — large-scale fire tests on Cygnus spacecraft\n• BASS — burning and suppression of solids on ISS\n• FLEX — droplet combustion and cool flame phenomena\n• SoFIE — solid fuel ignition and extinction\n• ACME — advanced combustion experiments\n• Smoke detection research\n\nTry rephrasing your question or ask about one of these programs!`,
+            sources: []
+          };
+        }
+
+        // Build a data-driven answer from the hits
+        let answer = '';
+        const sourceIds = hits.map(h => h.id);
+
+        // Check for specific patterns to give structured answers
+        if (lower.includes('compare') || lower.includes('difference') || lower.includes(' vs ') || lower.includes('versus')) {
+          answer = `Here's a comparison of the relevant experiments I found:\n\n`;
+          hits.forEach(h => {
+            answer += `${h.id} (${h.mission_program}): ${h.summary || h.title}`;
+            if (h.oxygen_pct != null) answer += ` O2: ${h.oxygen_pct}%`;
+            if (h.airflow_cms != null) answer += `, Airflow: ${h.airflow_cms} cm/s`;
+            if (h.flame_spread_rate_mms != null) answer += `, Flame length: ${h.flame_spread_rate_mms} cm`;
+            answer += '\n\n';
+            if (h.key_findings && h.key_findings.length > 0) {
+              answer += `Key findings: ${h.key_findings[0]}\n\n`;
+            }
+          });
+        } else if (lower.includes('overview') || lower.includes('summary') || lower.includes('tell me about')) {
+          const firstHit = hits[0];
+          answer = `${firstHit.title} [${firstHit.id}]\n\n`;
+          if (firstHit.summary) answer += `${firstHit.summary}\n\n`;
+          if (firstHit.oxygen_pct != null || firstHit.airflow_cms != null) {
+            answer += 'Conditions: ';
+            if (firstHit.oxygen_pct != null) answer += `${firstHit.oxygen_pct}% O2`;
+            if (firstHit.airflow_cms != null) answer += `, ${firstHit.airflow_cms} cm/s airflow`;
+            if (firstHit.flame_spread_rate_mms != null) answer += `, flame length ${firstHit.flame_spread_rate_mms} cm`;
+            answer += `\nPlatform: ${firstHit.facility_platform}\n`;
+            if (firstHit.hardware) answer += `Hardware: ${firstHit.hardware}\n`;
+            answer += '\n';
+          }
+          if (firstHit.key_findings && firstHit.key_findings.length > 0) {
+            answer += 'Key findings:\n';
+            firstHit.key_findings.forEach(f => { answer += `→ ${f}\n`; });
+            answer += '\n';
+          }
+          if (firstHit.extinction_behavior) answer += `Behavior: ${firstHit.extinction_behavior}\n\n`;
+          if (firstHit.fire_relevance) answer += `Fire safety relevance: ${firstHit.fire_relevance}\n`;
+          if (hits.length > 1) {
+            answer += `\nRelated experiments: ${hits.slice(1).map(h => `[${h.id}]`).join(' ')}`;
+          }
+        } else {
+          // General research answer
+          answer = `Based on our database, here's what I found:\n\n`;
+          hits.forEach(h => {
+            answer += `[${h.id}] ${h.title}\n`;
+            if (h.summary) answer += `${h.summary}\n`;
+            if (h.key_findings && h.key_findings.length > 0) {
+              answer += `Key finding: ${h.key_findings[0]}\n`;
+            }
+            if (h.oxygen_pct != null) answer += `O2: ${h.oxygen_pct}%`;
+            if (h.airflow_cms != null) answer += ` | Airflow: ${h.airflow_cms} cm/s`;
+            if (h.flame_spread_rate_mms != null) answer += ` | Flame length: ${h.flame_spread_rate_mms} cm`;
+            if (h.oxygen_pct != null || h.airflow_cms != null) answer += '\n';
+            answer += '\n';
+          });
+          if (hits.length > 0 && hits[0].fire_relevance) {
+            answer += `Fire safety relevance: ${hits[0].fire_relevance}`;
+          }
+        }
+
+        return { text: answer.trim(), sources: sourceIds };
+      }
 
       // Connects to backend /api/chat with conversation history
       const processQuery = async (queryText) => {
@@ -886,25 +1059,12 @@
           console.warn("Backend chat unavailable, using local synthesis:", err);
         }
 
-        // Local fallback synthesis if backend is unavailable
-        const lower = q.toLowerCase();
-        let fallbackText = '';
-        if (lower.match(/^(hi|hello|hey|howdy|good\s)/)) {
-          fallbackText = "Hello! I'm IGNIS, your microgravity fire research assistant. I'm currently in offline mode, but I can still help you explore the experiment data loaded in the dashboard. Try clicking on different experiments or using the quick-action buttons!";
-        } else if (lower.includes('saffire')) {
-          fallbackText = "The Saffire series (I through V) conducted large-scale fire tests aboard Cygnus free-flyers. Key findings: flame spread is steady (not accelerating) in microgravity, and airflow velocity directly controls flame size. Saffire-V tested exploration atmospheres at 26.2% O2 and 70.7 kPa, showing thin fuels can keep burning without airflow at higher O2.\n\n[SAFFIRE-I] [SAFFIRE-III] [SAFFIRE-V]";
-        } else if (lower.includes('cool flame') || lower.includes('flex') || lower.includes('droplet')) {
-          fallbackText = "Cool flames are low-temperature combustion that can continue invisibly after visible flames extinguish. The FLEX and FLEX-2 droplet combustion experiments, along with CFI (Cool Flames Investigation), study this phenomenon using the MDCA apparatus in the CIR on ISS.\n\n[FLEX] [FLEX-2] [CFI]";
-        } else if (lower.includes('oxygen') || lower.includes('o2')) {
-          fallbackText = "Oxygen concentration is a critical fire safety parameter. The dataset spans from 18% O2 (SoFIE-MIST) to 85% O2 (ACME CFI-G). Saffire-V tested exploration atmospheres at 26.2% O2 / 70.7 kPa. Higher oxygen levels increase flame size and persistence.\n\n[SAFFIRE-V] [SoFIE-MIST] [ACME-CFI-G]";
-        } else {
-          fallbackText = `I'm currently in offline mode, so I can provide only basic information. Your question about "${q}" would be best answered when connected to the full AI backend. In the meantime, explore the experiment cards and scatter plot for data-driven insights!`;
-        }
-
+        // Smart local fallback using loaded experiments data
+        const localResult = buildLocalAnswer(q, experiments);
         setChatMessages(prev => [...prev, {
           role: 'assistant',
-          text: fallbackText,
-          sources: []
+          text: localResult.text,
+          sources: localResult.sources
         }]);
         setIsQuerying(false);
       };
