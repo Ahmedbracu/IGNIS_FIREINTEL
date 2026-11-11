@@ -1,0 +1,1244 @@
+[
+ {
+  "fuel_state": "solid",
+  "o2": 21,
+  "pressure_kpa": 100,
+  "flow": 20,
+  "flame_len": 4,
+  "spread": null,
+  "tests": [
+   {
+    "sample": "I-1",
+    "material": "SIBAL",
+    "o2": 21,
+    "pressure_kpa": 100,
+    "flow": 20,
+    "direction": "concurrent and opposed",
+    "length_cm": 94,
+    "result": "steady size 4 cm, max 6.2 cm"
+   }
+  ],
+  "data_gaps": [
+   "Spread-rate values are plotted in source figures; not yet extracted"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "SAFFIRE-I",
+  "name": "Saffire-I Large-Scale Flame Spread over SIBAL Fabric",
+  "prog": "Saffire",
+  "platform": "Cygnus OA-6 free-flyer (2016)",
+  "hardware": "Saffire Flow Unit, 46 cm duct",
+  "fuel": "SIBAL cloth (75% cotton / 25% fiberglass), 41 cm x 94 cm",
+  "ext": "Flame reached a steady size instead of growing continuously as in normal gravity; burn lasted about 400 s",
+  "sensors": "Video cameras, thermocouples, radiometers, flame stand-off distance",
+  "summary": "First large-scale spacecraft fire test: concurrent and opposed flame spread over a thin charring fabric in a 20 cm/s airflow, away from the ISS.",
+  "key_findings": [
+   "Steady (not accelerating) concurrent flame spread over a large thin fuel in low gravity",
+   "Steady flame length about 4 cm, maximum about 6.2 cm (about 30% overshoot from boundary-layer development)",
+   "Average flame power about 1200 W (+/-300 W) per mission slides"
+  ],
+  "tags": [
+   "habitat_flammability",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Validates models of realistic spacecraft fire growth for vehicle-scale scenarios.",
+  "cite": "Urban et al., ICES-2021-266, Table 2; Saffire I-III results slides",
+  "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+  "verified": "paper",
+  "sources": [
+   {
+    "title": "Urban et al., Fire Safety Implications of Preliminary Results from Saffire IV and V (ICES-2021-266)",
+    "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+    "type": "paper"
+   },
+   {
+    "title": "NASA slides: Saffire I-III results and Saffire IV-VI concept",
+    "url": "https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf",
+    "type": "slides"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "solid",
+  "o2": 21,
+  "pressure_kpa": 100,
+  "flow": 20,
+  "flame_len": 4,
+  "spread": null,
+  "tests": [
+   {
+    "sample": "II-5",
+    "material": "SIBAL",
+    "o2": 21,
+    "pressure_kpa": 100,
+    "flow": 20,
+    "direction": "n/a",
+    "length_cm": 30,
+    "result": "steady size 4 cm"
+   },
+   {
+    "sample": "II-6",
+    "material": "SIBAL",
+    "o2": 21,
+    "pressure_kpa": 100,
+    "flow": 25,
+    "direction": "n/a",
+    "length_cm": 30,
+    "result": "steady size 5 cm"
+   }
+  ],
+  "data_gaps": [
+   "Conditions for the PMMA samples not extracted"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "SAFFIRE-II",
+  "name": "Saffire-II Oxygen Flammability Limits in Low Gravity",
+  "prog": "Saffire",
+  "platform": "Cygnus free-flyer",
+  "hardware": "Saffire Flow Unit, 46 cm duct",
+  "fuel": "SIBAL strips 5 cm wide x 30 cm, plus 5 cm wide two-sided PMMA (flat and grooved)",
+  "ext": "Narrow SIBAL samples burned to steady 4-5 cm flames; PMMA flames grew to 8.0 cm (grooved) and 9.5 cm (flat)",
+  "sensors": "Video cameras, thermocouples, radiometers",
+  "summary": "Multi-sample test to find the oxygen flammability limits of materials in long-duration low gravity; samples were placed with a long entrance length.",
+  "key_findings": [
+   "No flame-size overshoot on SIBAL when placed with a long entrance length",
+   "Average flame power about 200 W (+/-50 W) per mission slides",
+   "PMMA two-sided flames reached limiting lengths"
+  ],
+  "tags": [
+   "habitat_flammability",
+   "ignition"
+  ],
+  "fire_relevance": "Supports flammability limits for spacecraft materials.",
+  "cite": "Urban et al., ICES-2021-266, Table 2 and Sec. III.D",
+  "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+  "verified": "paper",
+  "sources": [
+   {
+    "title": "Urban et al., Fire Safety Implications of Preliminary Results from Saffire IV and V (ICES-2021-266)",
+    "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+    "type": "paper"
+   },
+   {
+    "title": "NASA slides: Saffire I-III results and Saffire IV-VI concept",
+    "url": "https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf",
+    "type": "slides"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "solid",
+  "o2": 21,
+  "pressure_kpa": 100,
+  "flow": 25,
+  "flame_len": 5,
+  "spread": null,
+  "tests": [
+   {
+    "sample": "III-1",
+    "material": "SIBAL",
+    "o2": 21,
+    "pressure_kpa": 100,
+    "flow": 25,
+    "direction": "concurrent and opposed",
+    "length_cm": 94,
+    "result": "steady 5 cm, max 8.2 cm"
+   }
+  ],
+  "data_gaps": [],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "SAFFIRE-III",
+  "name": "Saffire-III Higher-Flow Repeat of Saffire-I",
+  "prog": "Saffire",
+  "platform": "Cygnus free-flyer",
+  "hardware": "Saffire Flow Unit, 46 cm duct",
+  "fuel": "SIBAL cloth, 41 cm x 94 cm (same as Saffire-I)",
+  "ext": "Steady flame size about 5 cm (max 8.2 cm); burn lasted about 320 s",
+  "sensors": "Video cameras, thermocouples, radiometers",
+  "summary": "Same material as Saffire-I at a faster airflow, to show how flow speed controls flame spread.",
+  "key_findings": [
+   "Flame speed is proportional to airflow velocity",
+   "Faster flow (25 vs 20 cm/s) gave a larger steady flame"
+  ],
+  "tags": [
+   "habitat_flammability",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Shows airflow (ventilation) strongly controls fire growth in low gravity.",
+  "cite": "Urban et al., ICES-2021-266, Table 2; Saffire I-III slides",
+  "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+  "verified": "paper",
+  "sources": [
+   {
+    "title": "Urban et al., Fire Safety Implications of Preliminary Results from Saffire IV and V (ICES-2021-266)",
+    "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+    "type": "paper"
+   },
+   {
+    "title": "NASA slides: Saffire I-III results and Saffire IV-VI concept",
+    "url": "https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf",
+    "type": "slides"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "solid",
+  "o2": 22,
+  "pressure_kpa": 100,
+  "flow": 20,
+  "flame_len": 8.5,
+  "spread": null,
+  "tests": [
+   {
+    "sample": "IV-1",
+    "material": "SIBAL",
+    "o2": 22,
+    "pressure_kpa": 100,
+    "flow": 20,
+    "direction": "concurrent",
+    "length_cm": 50,
+    "result": "steady 8.5 cm, max 11 cm"
+   },
+   {
+    "sample": "IV-2",
+    "material": "2-sided PMMA",
+    "o2": 22,
+    "pressure_kpa": 100,
+    "flow": 20,
+    "direction": "concurrent",
+    "length_cm": 18,
+    "result": "grew to 9.5 cm in 400 s; delayed extinguishment; deflagration at ignition"
+   }
+  ],
+  "data_gaps": [],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "SAFFIRE-IV",
+  "name": "Saffire-IV Thin and Thick Fuels with Combustion-Product Monitoring",
+  "prog": "Saffire",
+  "platform": "Cygnus NG-13 (ignited May 2020)",
+  "hardware": "Saffire Flow Unit (30 cm duct) plus Far Field Diagnostics",
+  "fuel": "SIBAL cloth 50 cm; two-sided PMMA 18 cm x 1 cm thick",
+  "ext": "Thin SIBAL: steady flame 8.5 cm (max 11 cm). Two-sided PMMA stayed alight when flow stopped (bubbling fuel jets) and soot blocked the outlet screen",
+  "sensors": "Video (side and top cameras), thermocouples, radiometers, O2/CO2/CO gas sensors, aerosol monitors, remote CO2 and temperature sensors in six locations",
+  "summary": "Larger fires in a reduced-height duct, with measurement of heat, smoke and gases and a test of post-fire cleanup.",
+  "key_findings": [
+   "Reduced duct height roughly doubled SIBAL spread rate versus Saffire I and III",
+   "Two-sided PMMA flame persisted 15 s without flow; PMMA flame grew to 9.5 cm after 400 s",
+   "Deflagration seen at ignition on PMMA (stratified fuel vapor)",
+   "Heat release up to 10 kW; average vehicle conditions stayed acceptable (Saffire IV-V)"
+  ],
+  "tags": [
+   "habitat_flammability",
+   "extinguishment",
+   "smoke_detection",
+   "controls_equipment",
+   "ignition"
+  ],
+  "fire_relevance": "Evidence for extinguishment strategy, smoke and gas products, and post-fire cleanup in a crewed vehicle.",
+  "cite": "Urban et al., ICES-2021-266, Tables 1-2",
+  "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+  "verified": "paper",
+  "sources": [
+   {
+    "title": "Urban et al., Fire Safety Implications of Preliminary Results from Saffire IV and V (ICES-2021-266)",
+    "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+    "type": "paper"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "status": "sourced",
+  "psi_note": "Not on the PSI research-area page I checked (dated 2023); data cited from the published paper.",
+  "psi_listed": false
+ },
+ {
+  "fuel_state": "solid",
+  "o2": 26.2,
+  "pressure_kpa": 70.7,
+  "flow": 20,
+  "flame_len": 10,
+  "spread": null,
+  "tests": [
+   {
+    "sample": "V-2",
+    "material": "Cotton jersey",
+    "o2": 26.2,
+    "pressure_kpa": 70.7,
+    "flow": 20,
+    "direction": "concurrent",
+    "length_cm": 50,
+    "result": "steady 10.0 cm, max 14.0 cm; burned on after 70 s without flow"
+   },
+   {
+    "sample": "V-3",
+    "material": "1-sided PMMA",
+    "o2": 25.4,
+    "pressure_kpa": 71.3,
+    "flow": 20,
+    "direction": "concurrent",
+    "length_cm": 18,
+    "result": "grew to 11 cm in 450 s; extinguished right after 5 cm/s step-down"
+   },
+   {
+    "sample": "V-4",
+    "material": "Structured PMMA",
+    "o2": 25.7,
+    "pressure_kpa": 72.6,
+    "flow": 20,
+    "direction": "opposed",
+    "length_cm": 20,
+    "result": "deflagration at ignition; faster spread on thin ribs"
+   }
+  ],
+  "data_gaps": [],
+  "environments": [
+   "spacecraft",
+   "lunar_base"
+  ],
+  "id": "SAFFIRE-V",
+  "name": "Saffire-V Exploration Atmospheres (Low Pressure, Higher O2)",
+  "prog": "Saffire",
+  "platform": "Cygnus NG-14 (January 2021)",
+  "hardware": "Saffire Flow Unit (30 cm duct) plus Far Field Diagnostics",
+  "fuel": "Cotton jersey 50 cm; one-sided PMMA 18 cm x 0.5 cm; structured (ribbed) PMMA 20 cm x 1 cm",
+  "ext": "Reducing flow to 5 cm/s for 300 s before stopping it let PMMA flames extinguish immediately; thin cotton flame regrew when flow resumed after 70 s without flow",
+  "sensors": "Video, thermocouples, radiometers, O2/CO2/CO/HF/HCl sensors, aerosol monitors, remote CO2 sensors",
+  "summary": "Burned materials in reduced pressure and elevated oxygen (the kind of atmosphere planned for exploration habitats) and tested ways to promote extinguishment.",
+  "key_findings": [
+   "Thin fuel at higher O2 can keep burning without airflow",
+   "Reduced (not zero) airflow cooled the sample and gave faster extinction",
+   "Ribbed PMMA: flame speed depends on rib width (1-10 mm), not slab thickness",
+   "NASA-STD-6001 Test 1 does not capture low-gravity behavior of thick fuels"
+  ],
+  "tags": [
+   "habitat_flammability",
+   "atmosphere_exploration",
+   "extinguishment",
+   "ignition",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Closest available data to a low-pressure, oxygen-enriched Moon habitat; informs material screening standards and extinguishment strategy.",
+  "cite": "Urban et al., ICES-2021-266, Tables 1-2",
+  "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+  "verified": "paper",
+  "sources": [
+   {
+    "title": "Urban et al., Fire Safety Implications of Preliminary Results from Saffire IV and V (ICES-2021-266)",
+    "url": "https://ntrs.nasa.gov/api/citations/20210011521/downloads/ICES%202021-266%200503-2021%20final.pdf",
+    "type": "paper"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "status": "sourced",
+  "psi_note": "Not on the PSI research-area page I checked (dated 2023); data cited from the published paper.",
+  "psi_listed": false
+ },
+ {
+  "fuel_state": "solid",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Numeric test matrix (O2, pressure, flow per run)",
+   "Sensor list"
+  ],
+  "environments": [
+   "spacecraft",
+   "lunar_base"
+  ],
+  "id": "SoFIE-MIST",
+  "name": "SoFIE-MIST Solid Fuel Ignition and Extinction",
+  "prog": "SoFIE",
+  "platform": "Combustion Integrated Rack, ISS",
+  "hardware": "SoFIE insert in the CIR (small wind tunnel, ceramic heaters)",
+  "fuel": "PMMA cylinder (12.7 mm example)",
+  "ext": "Maps ignition and extinction boundaries versus flow speed, oxygen, pressure and external radiant heating",
+  "sensors": "",
+  "summary": "Measures when a solid fuel ignites and goes out as airflow, oxygen concentration, pressure and external heat vary, including low-pressure, higher-O2 exploration atmospheres.",
+  "key_findings": [
+   "External radiant heating of about 1-3 kW/m2 probes early fire behavior (from investigator interview)",
+   "Aims to validate material-flammability models and guide NASA test interpretation"
+  ],
+  "tags": [
+   "habitat_flammability",
+   "atmosphere_exploration",
+   "ignition",
+   "extinguishment",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Ignition/extinction maps for selecting safer materials and extinguishing methods.",
+  "cite": "NASA SoFIE-MIST page; SoFIE project slides (NTRS 20200000361); investigator interview",
+  "url": "https://science.nasa.gov/biological-physical/investigations/sofie-mist",
+  "verified": "partial",
+  "sources": [
+   {
+    "title": "NASA SoFIE-MIST investigation",
+    "url": "https://science.nasa.gov/biological-physical/investigations/sofie-mist",
+    "type": "nasa"
+   },
+   {
+    "title": "SoFIE project overview",
+    "url": "https://ntrs.nasa.gov/api/citations/20200000361/downloads/20200000361.pdf",
+    "type": "slides"
+   },
+   {
+    "title": "Fire Science Show #221 with M. Gollner (SoFIE-MIST interview)",
+    "url": "https://www.firescienceshow.com/e/14076519708109/",
+    "type": "interview"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "status": "sourced",
+  "psi_note": "Not on the PSI research-area page I checked (dated 2023); data cited from NASA pages.",
+  "psi_listed": false
+ },
+ {
+  "fuel_state": "solid",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Test conditions",
+   "Sensor list"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "BASS",
+  "name": "BASS Burning and Suppression of Solids",
+  "prog": "MSG",
+  "platform": "Microgravity Science Glovebox, ISS",
+  "hardware": "Modular fan-driven flow duct (built for SPICE)",
+  "fuel": "SIBAL cotton-fiberglass flat samples, 1 cm and 2 cm wide",
+  "ext": "Flammability limits depend on oxygen and airflow; forced flow in low gravity feeds oxygen while removing less heat",
+  "sensors": "",
+  "summary": "Small-scale solid-fuel flame spread, concurrent and opposed, used to define flammability limits and compare with Saffire.",
+  "key_findings": [
+   "Saffire-I flame compared directly with BASS flames in mission slides"
+  ],
+  "tags": [
+   "habitat_flammability",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Flammability limits as a function of airflow and oxygen.",
+  "cite": "Saffire I-III slides; challenge brief",
+  "url": "https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf",
+  "verified": "partial",
+  "sources": [
+   {
+    "title": "NASA slides: Saffire I-III results and Saffire IV-VI concept",
+    "url": "https://ntrs.nasa.gov/api/citations/20180005168/downloads/20180005168.pdf",
+    "type": "slides"
+   },
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "solid",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Fuel, O2 and flow conditions to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "BASS-II",
+  "name": "BASS-II Burning and Suppression of Solids II",
+  "prog": "MSG",
+  "platform": "Microgravity Science Glovebox, ISS",
+  "hardware": "Modular fan-driven flow duct (built for SPICE)",
+  "fuel": "Different fuel samples (details in PSI)",
+  "ext": "Studies burning and extinction behavior of solids",
+  "sensors": "To be taken from PSI",
+  "summary": "Follow-on to BASS to guide materials-flammability screening for spacecraft and give data on solid-fuel burning in microgravity.",
+  "tags": [
+   "habitat_flammability",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Guides screening strategy for spacecraft materials.",
+  "cite": "UC Berkeley MIST/BASS-II project page; challenge brief",
+  "url": "https://cfp.berkeley.edu/research/material-ignition-and-suppression-test-mist-in-space-exploration-atmospheres/",
+  "verified": "partial",
+  "sources": [
+   {
+    "title": "UC Berkeley MIST and BASS-II page",
+    "url": "https://cfp.berkeley.edu/research/material-ignition-and-suppression-test-mist-in-space-exploration-atmospheres/",
+    "type": "web"
+   },
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": null,
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "All test conditions to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "SPICE",
+  "name": "SPICE Smoke Point In Co-flow Experiment",
+  "prog": "MSG",
+  "platform": "Microgravity Science Glovebox, ISS",
+  "hardware": "Modular fan-driven flow duct built for SPICE",
+  "fuel": "Co-flow flames (fuel details in PSI)",
+  "summary": "Studies the smoke point of co-flow flames (per the investigation name); part of the MSG set sharing one flow duct.",
+  "tags": [
+   "smoke_detection",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Smoke-point behavior of flames.",
+  "cite": "Challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "sensors": "",
+  "ext": "",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": null,
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "All test conditions to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "SLICE",
+  "name": "SLICE Structure and Liftoff In Combustion Experiment",
+  "prog": "MSG",
+  "platform": "Microgravity Science Glovebox, ISS",
+  "hardware": "Modular fan-driven flow duct built for SPICE",
+  "fuel": "Flames (fuel details in PSI)",
+  "summary": "Studies flame structure and liftoff (per the investigation name) in the shared MSG flow duct.",
+  "tags": [
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Flame stability data for models.",
+  "cite": "Challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "sensors": "",
+  "ext": "",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "liquid",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Fuel, O2 and test matrix to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "FLEX",
+  "name": "FLEX Flame Extinguishment Experiment (droplets)",
+  "prog": "MDCA",
+  "platform": "Multi-user Droplet Combustion Apparatus in CIR, ISS",
+  "hardware": "MDCA",
+  "fuel": "Burning liquid-fuel droplets (fuels in PSI)",
+  "summary": "Burning liquid droplets in microgravity to understand flame extinction.",
+  "tags": [
+   "extinguishment",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Extinction behavior of liquid fuels.",
+  "cite": "Challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "sensors": "",
+  "ext": "",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "liquid",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Fuel, O2 and test matrix to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "FLEX-2",
+  "name": "FLEX-2 Droplet Combustion",
+  "prog": "MDCA",
+  "platform": "MDCA in CIR, ISS",
+  "hardware": "MDCA",
+  "fuel": "Burning liquid-fuel droplets (fuels in PSI)",
+  "summary": "Second droplet campaign using the same apparatus as FLEX.",
+  "tags": [
+   "extinguishment",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Extinction behavior of liquid fuels.",
+  "cite": "Challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "sensors": "",
+  "ext": "",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "liquid",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Fuel, O2 and test matrix to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "CFI",
+  "name": "CFI Cool Flames Investigation (droplets)",
+  "prog": "MDCA",
+  "platform": "MDCA in CIR, ISS",
+  "hardware": "MDCA",
+  "fuel": "Burning liquid-fuel droplets (fuels in PSI)",
+  "summary": "Droplet combustion with a focus on cool flames.",
+  "tags": [
+   "extinguishment",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "",
+  "cite": "Challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "sensors": "",
+  "ext": "",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "gas",
+  "o2": 85,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Pressure and flow conditions to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft",
+   "lunar_base"
+  ],
+  "id": "ACME-CFI-G",
+  "name": "ACME CFI-G Cool Flames Investigation with Gases",
+  "prog": "ACME",
+  "platform": "Combustion Integrated Rack, ISS",
+  "hardware": "ACME modular hardware, spherical burner",
+  "fuel": "Flammable gas (e.g., propane) in nitrogen, with O2-N2 mix from a spherical burner (inside-out flame)",
+  "ext": "Highest-oxygen microgravity tests in PSI (up to 85% O2)",
+  "summary": "Inside-out flames with oxygen up to 85%, the highest oxygen concentration in microgravity combustion data in PSI.",
+  "key_findings": [
+   "Oxygen up to 85% in microgravity"
+  ],
+  "tags": [
+   "atmosphere_exploration",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Extends flammability data to oxygen levels well above Earth air.",
+  "cite": "Challenge brief",
+  "url": "",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "sensors": "",
+  "status": "sourced",
+  "psi_listed": false
+ },
+ {
+  "fuel_state": "gas",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "Test matrix to be taken from PSI"
+  ],
+  "environments": [
+   "spacecraft"
+  ],
+  "id": "ACME-BRE",
+  "name": "ACME BRE Burning Rate Emulator",
+  "prog": "ACME",
+  "platform": "Combustion Integrated Rack, ISS",
+  "hardware": "ACME modular hardware",
+  "fuel": "Gaseous fuel emulating a burning material",
+  "ext": "Materials flammability in still atmospheres as a function of material properties",
+  "summary": "Uses gas flames to emulate how materials burn in still air, linking material properties to flammability.",
+  "tags": [
+   "habitat_flammability",
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Materials flammability in quiescent (no-flow) atmospheres.",
+  "cite": "Challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "sensors": "",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "fuel_state": "gas",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "tests": [],
+  "data_gaps": [
+   "No true partial-gravity data in PSI yet"
+  ],
+  "environments": [
+   "spacecraft",
+   "lunar_base"
+  ],
+  "id": "ACME-E-FIELD",
+  "name": "ACME E-FIELD Electric-Field Effects on Laminar Diffusion Flames",
+  "prog": "ACME",
+  "platform": "Combustion Integrated Rack, ISS",
+  "hardware": "ACME modular hardware",
+  "fuel": "Gaseous fuel laminar diffusion flames",
+  "ext": "Electric field acting on flame ions mimics partial gravity",
+  "summary": "Used an electric field on flame ions to imitate partial-gravity effects, a stand-in while true partial-gravity data are unavailable.",
+  "tags": [
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Indirect route to Moon and Mars gravity behavior.",
+  "cite": "Challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   },
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-09",
+  "key_findings": [],
+  "sensors": "",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "id": "SAME",
+  "name": "SAME Smoke Aerosol Measurement Experiment",
+  "prog": "Smoke",
+  "platform": "ISS",
+  "hardware": "Smoke-measurement instrument",
+  "fuel_state": "",
+  "fuel": "Smoke aerosols (details in PSI)",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "ext": "",
+  "sensors": "",
+  "summary": "Smoke-particle measurement in microgravity; one of its smoke-detection instruments was later reused for dust in DAFT (per challenge brief).",
+  "key_findings": [],
+  "tags": [
+   "smoke_detection",
+   "controls_equipment",
+   "earth_apps"
+  ],
+  "fire_relevance": "Smoke detection design for spacecraft.",
+  "environments": [
+   "spacecraft"
+  ],
+  "tests": [],
+  "data_gaps": [
+   "Instrument-level details and test conditions"
+  ],
+  "cite": "NASA PSI research-area list; challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   },
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   }
+  ],
+  "last_checked": "2026-11-10",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "id": "SAME-R",
+  "name": "SAME-R Smoke Aerosol Measurement Experiment Reflight",
+  "prog": "Smoke",
+  "platform": "ISS",
+  "hardware": "Smoke-measurement instrument",
+  "fuel_state": "",
+  "fuel": "Smoke aerosols (details in PSI)",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "ext": "",
+  "sensors": "",
+  "summary": "Reflight of SAME for smoke-particle measurement in microgravity.",
+  "key_findings": [],
+  "tags": [
+   "smoke_detection",
+   "controls_equipment"
+  ],
+  "fire_relevance": "Smoke detection design for spacecraft.",
+  "environments": [
+   "spacecraft"
+  ],
+  "tests": [],
+  "data_gaps": [
+   "Instrument-level details and test conditions"
+  ],
+  "cite": "NASA PSI research-area list; challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   },
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   }
+  ],
+  "last_checked": "2026-11-10",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "id": "DAFT",
+  "name": "DAFT Dust and Aerosol Measurement Feasibility Test",
+  "prog": "Smoke",
+  "platform": "ISS",
+  "hardware": "Instrument also used in SAME",
+  "fuel_state": "",
+  "fuel": "Dust and aerosols (details in PSI)",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "ext": "",
+  "sensors": "",
+  "summary": "Used a smoke instrument from SAME to detect dust, showing one detector can serve more than one hazard (per challenge brief).",
+  "key_findings": [],
+  "tags": [
+   "smoke_detection",
+   "controls_equipment"
+  ],
+  "fire_relevance": "Dust and smoke detection for crew habitats.",
+  "environments": [
+   "spacecraft"
+  ],
+  "tests": [],
+  "data_gaps": [
+   "Instrument-level details and test conditions"
+  ],
+  "cite": "NASA PSI research-area list; challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   },
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   }
+  ],
+  "last_checked": "2026-11-10",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "id": "DAFT-2",
+  "name": "DAFT-2 Dust and Aerosol Measurement Feasibility Test-2",
+  "prog": "Smoke",
+  "platform": "ISS",
+  "hardware": "Instrument also used in SAME",
+  "fuel_state": "",
+  "fuel": "Dust and aerosols (details in PSI)",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "ext": "",
+  "sensors": "",
+  "summary": "Second dust and aerosol measurement feasibility test.",
+  "key_findings": [],
+  "tags": [
+   "smoke_detection",
+   "controls_equipment"
+  ],
+  "fire_relevance": "Dust and smoke detection for crew habitats.",
+  "environments": [
+   "spacecraft"
+  ],
+  "tests": [],
+  "data_gaps": [
+   "Instrument-level details and test conditions"
+  ],
+  "cite": "NASA PSI research-area list; challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   },
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   }
+  ],
+  "last_checked": "2026-11-10",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "id": "ACME-S-FLAMES",
+  "name": "ACME S-Flames Structure and Response of Spherical Diffusion Flames",
+  "prog": "ACME",
+  "platform": "Combustion Integrated Rack, ISS",
+  "hardware": "ACME modular hardware",
+  "fuel_state": "gas",
+  "fuel": "Gaseous fuel spherical diffusion flames (details in PSI)",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "ext": "",
+  "sensors": "",
+  "summary": "One of the ACME gaseous-flame experiments flown in the CIR.",
+  "key_findings": [],
+  "tags": [
+   "predictive_modeling"
+  ],
+  "fire_relevance": "Flame-structure data for models.",
+  "environments": [
+   "spacecraft"
+  ],
+  "tests": [],
+  "data_gaps": [
+   "Test conditions"
+  ],
+  "cite": "NASA PSI research-area list; challenge brief",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "brief",
+  "sources": [
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   },
+   {
+    "title": "NASA App Challenge brief: Microgravity combustion for fire safety",
+    "url": "",
+    "type": "challenge-brief"
+   }
+  ],
+  "last_checked": "2026-11-10",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "id": "PSI-STUDY-COOLFLAME",
+  "name": "Quantitative Studies of Cool Flame Transitions at Radiation/Stretch Extinction Using Counterflow Flames",
+  "prog": "Modeling",
+  "platform": "Ground-based study using PSI data",
+  "hardware": "",
+  "fuel_state": "",
+  "fuel": "Counterflow flames",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "ext": "",
+  "sensors": "",
+  "summary": "Ground-based study built on PSI microgravity data, listed by PSI.",
+  "key_findings": [],
+  "tags": [
+   "predictive_modeling",
+   "extinguishment"
+  ],
+  "fire_relevance": "Supports extinction modeling.",
+  "environments": [
+   "spacecraft"
+  ],
+  "tests": [],
+  "data_gaps": [
+   "Authors, methods and results"
+  ],
+  "cite": "NASA PSI research-area list",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "psi_list",
+  "sources": [
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-10",
+  "status": "sourced",
+  "psi_listed": true
+ },
+ {
+  "id": "PSI-STUDY-SAME-MODEL",
+  "name": "Utilization of SAME Data for Advanced Modeling and Simulation of Smoke Generation in Micro-Gravity",
+  "prog": "Modeling",
+  "platform": "Ground-based study using PSI data",
+  "hardware": "",
+  "fuel_state": "",
+  "fuel": "Smoke generation (SAME data)",
+  "o2": null,
+  "pressure_kpa": null,
+  "flow": null,
+  "flame_len": null,
+  "spread": null,
+  "ext": "",
+  "sensors": "",
+  "summary": "Ground-based modeling study that uses SAME data, listed by PSI.",
+  "key_findings": [],
+  "tags": [
+   "predictive_modeling",
+   "smoke_detection"
+  ],
+  "fire_relevance": "Smoke-generation models for microgravity.",
+  "environments": [
+   "spacecraft"
+  ],
+  "tests": [],
+  "data_gaps": [
+   "Authors, methods and results"
+  ],
+  "cite": "NASA PSI research-area list",
+  "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+  "verified": "psi_list",
+  "sources": [
+   {
+    "title": "NASA PSI: Investigations by Research Area (combustion list)",
+    "url": "https://www.nasa.gov/physical-sciences-informatics-psi/psi-investigations-by-research-area/",
+    "type": "nasa"
+   }
+  ],
+  "last_checked": "2026-11-10",
+  "status": "sourced",
+  "psi_listed": true
+ }
+]
