@@ -377,10 +377,19 @@
               <div className="absolute -bottom-2 -right-2 w-full h-full bg-poppink rounded-2xl border-2 border-black"></div>
               <div className="relative bg-black text-white p-5 rounded-2xl border-2 border-black shadow-pop w-64 text-center">
                 <div className="text-[10px] font-mono text-popyellow tracking-widest uppercase mb-1">Active Benchmark</div>
-                <div className="text-3xl font-black mb-1 flex items-center justify-center gap-1">
-                  {selectedExp?.flame_spread_rate_mms ?? '—'} 
-                  <span className="text-xs font-normal text-slate-300">{selectedExp?.flame_spread_rate_mms != null ? 'cm' : ''}</span>
-                </div>
+                {selectedExp?.flame_spread_rate_mms != null ? (
+                  <div className="text-3xl font-black mb-1 flex items-center justify-center gap-1">
+                    {selectedExp.flame_spread_rate_mms} 
+                    <span className="text-xs font-normal text-slate-300">cm flame</span>
+                  </div>
+                ) : selectedExp?.oxygen_pct != null ? (
+                  <div className="text-3xl font-black mb-1 flex items-center justify-center gap-1">
+                    {selectedExp.oxygen_pct}
+                    <span className="text-xs font-normal text-slate-300">% O₂</span>
+                  </div>
+                ) : (
+                  <div className="text-2xl font-black mb-1">{selectedExp?.id || '—'}</div>
+                )}
                 <div className="text-xs font-bold text-slate-300 truncate mb-3">{selectedExp?.fuel_material || selectedExp?.fuel || 'Solid Specimen'}</div>
                 <div className="inline-block bg-popyellow text-black text-[11px] font-extrabold px-3 py-1 rounded-full border border-black">
                   {selectedExp?.mission_program || selectedExp?.prog || 'NASA'} Platform
@@ -392,7 +401,16 @@
       );
     }
 
-    function ScatterPlotCard({ chartData, setSelectedExp }) {
+    function ScatterPlotCard({ chartData, setSelectedExp, filter }) {
+      const programInfo = {
+        'BASS': { label: 'BASS (Burning and Suppression of Solids)', desc: 'Studies flame spread over thin fuels and material flammability on ISS. Measures flame appearance, ignition, and suppression — not continuous airflow vs. flame-length curves.' },
+        'FLEX': { label: 'FLEX (Droplet Combustion)', desc: 'Studies isolated fuel-droplet burning and cool-flame phenomena in microgravity using the MDCA apparatus. Measures droplet diameter and burning rate, not airflow propagation.' },
+        'SoFIE': { label: 'SoFIE (Solid Fuel Ignition & Extinction)', desc: 'Studies ignition and extinction limits of solid fuels under controlled O₂ and flow on ISS. Quantitative flow/flame data is pending extraction from NASA PSI.' },
+        'ACME': { label: 'ACME (Advanced Combustion)', desc: 'Studies gas-phase flames (cool flames, soot, electric-field effects) inside the CIR on ISS. Uses gaseous fuels, not solid-fuel propagation measurements.' },
+        'Smoke': { label: 'Smoke Detection Research', desc: 'Studies smoke-particle characteristics to improve spacecraft smoke detectors. Focuses on particle size and detector response, not flame propagation.' },
+        'Modeling': { label: 'Computational Modeling', desc: 'Numerical studies to validate and extend experimental findings. No direct experimental airflow/flame measurements.' }
+      };
+      const info = programInfo[filter];
       return (
         <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
@@ -413,10 +431,20 @@
           <div className="h-64 w-full bg-cream-100 rounded-2xl p-2 border-2 border-black relative">
             {chartData.length === 0 ? (
               <div className="flex items-center justify-center h-full">
-                <div className="text-center">
+                <div className="text-center px-4">
                   <WindIcon className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                  <p className="text-sm font-bold text-slate-500">No numeric flow/flame data for this filter</p>
-                  <p className="text-xs text-slate-400 mt-1">Only Saffire experiments currently have airflow and flame-spread measurements. Try selecting "ALL" or "Saffire".</p>
+                  {info ? (
+                    <>
+                      <p className="text-sm font-bold text-slate-600 mb-1">{info.label}</p>
+                      <p className="text-xs text-slate-500 leading-relaxed max-w-md mx-auto">{info.desc}</p>
+                      <p className="text-[11px] text-slate-400 mt-2">Airflow vs. flame-length data is available for the <strong>Saffire</strong> program. Select "ALL" or "Saffire" to view the propagation matrix.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-bold text-slate-500">No numeric flow/flame data for this filter</p>
+                      <p className="text-xs text-slate-400 mt-1">Only Saffire experiments currently have airflow and flame-spread measurements. Try selecting "ALL" or "Saffire".</p>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (
@@ -889,37 +917,69 @@
       function buildLocalAnswer(q, exps) {
         const lower = q.toLowerCase();
         
+        // --- ABOUT THE WEB APP / DASHBOARD / IGNIS ---
+        // Catch ANY question about what this website/app/dashboard is or does
+        const isAboutApp = /what.*(this|the).*(web|app|site|dashboard|page|platform|tool|system)/i.test(q)
+          || /what.*(ignis|this).*(do|does|about|for|is)/i.test(q)
+          || /how.*(this|ignis).*(work|help|use)/i.test(q)
+          || /tell me.*(about|what).*(this|ignis)/i.test(q)
+          || /explain.*(this|ignis)/i.test(q)
+          || /purpose.*(this|ignis)/i.test(q)
+          || /what is ignis/i.test(q)
+          || /what's ignis/i.test(q)
+          || /what does ignis/i.test(q)
+          || /describe.*(this|ignis)/i.test(q)
+          || /what is this/i.test(q)
+          || /what's this/i.test(q)
+          || (lower.includes('web') && (lower.includes('what') || lower.includes('how') || lower.includes('about')))
+          || (lower.includes('asked') && (lower.includes('web') || lower.includes('app') || lower.includes('this')));
+        
+        if (isAboutApp) {
+          return {
+            text: `IGNIS (Fire Intelligence) is an AI-powered microgravity fire research and safety intelligence dashboard, built by team Off_Script for the NASA App Development Challenge.\n\nWhat this web application does:\n→ Research Explorer: Search and filter ${exps.length} NASA microgravity combustion experiments by program (Saffire, BASS, FLEX, SoFIE, ACME, Smoke), fuel type, oxygen level, and more.\n→ Experiment Profiles: Each experiment has a detailed dossier showing test conditions, key findings, sensors used, data gaps, and links to original NASA reports.\n→ Combustion Propagation Matrix: A scatter chart showing airflow velocity vs. flame length for experiments with numeric data, color-coded by risk level.\n→ AI Research Assistant: That's me! I answer your questions using real experiment data and cite my sources.\n\nWhy it matters:\nFire behaves completely differently in microgravity — flames don't rise, they form spherical shapes and can burn invisibly as "cool flames." Understanding this is critical for astronaut safety on the ISS, the Moon, and Mars. IGNIS makes decades of NASA fire research accessible and searchable in one place.\n\nHow to use it:\n→ Use the filter pills at the top to narrow by program\n→ Click any experiment card to see its full dossier\n→ Ask me questions — I can compare experiments, explain findings, and cite sources\n→ Use the quick-action buttons below for common research topics`,
+            sources: []
+          };
+        }
+
         // Greetings
         if (/^(hi|hello|hey|howdy|good\s|yo|hola|greetings|namaste|assalamu|salam)/i.test(lower.trim())) {
           return {
-            text: `Hello! 👋 I'm IGNIS, your AI-powered microgravity fire research assistant, built by team Off_Script. I have access to ${exps.length} investigations spanning programs like Saffire, BASS, FLEX, SoFIE, and ACME.\n\nI can help you explore specific experiments, compare fire behavior under different conditions, or explain microgravity combustion concepts. What would you like to know?`,
+            text: `Hello! 👋 I'm IGNIS, your AI-powered microgravity fire research assistant, built by team Off_Script for the NASA App Development Challenge.\n\nI have access to ${exps.length} investigations spanning programs like Saffire, BASS, FLEX, SoFIE, and ACME. I can help you explore specific experiments, compare fire behavior under different conditions, or explain how fire works differently in space.\n\nWhat would you like to know?`,
             sources: []
           };
         }
 
-        // Meta questions
-        if (lower.includes('who are you') || lower.includes('what are you') || lower.includes('what is ignis') || lower.includes("what's ignis") || lower.includes('introduce yourself') || lower.includes('your name')) {
+        // Who/what are you
+        if (lower.includes('who are you') || lower.includes('what are you') || lower.includes('introduce yourself') || lower.includes('your name')) {
           return {
-            text: `I'm IGNIS, an AI-powered NASA microgravity fire research and safety intelligence assistant. I was built by team Off_Script for the NASA App Development Challenge.\n\nI have access to ${exps.length} investigations from programs including Saffire (large-scale spacecraft fire tests), BASS (burning and suppression of solids), FLEX (droplet combustion and cool flames), SoFIE (solid fuel ignition and extinction), ACME (advanced combustion on the ISS), and Smoke (smoke detection research).\n\nI can help you search experiments, compare conditions, and understand fire behavior in microgravity. What interests you?`,
+            text: `I'm IGNIS, an AI-powered NASA microgravity fire research and safety intelligence assistant. I was built by team Off_Script for the NASA App Development Challenge.\n\nI have access to ${exps.length} investigations from programs including:\n→ Saffire: Large-scale fire tests on Cygnus spacecraft\n→ BASS: Burning and suppression of solids on ISS\n→ FLEX: Droplet combustion and cool flame phenomena\n→ SoFIE: Solid fuel ignition and extinction\n→ ACME: Advanced combustion experiments on ISS\n→ Smoke: Smoke detection research\n\nI can search experiments, compare conditions, explain findings, and always cite my data sources. What interests you?`,
             sources: []
           };
         }
 
-        if (lower.includes('what can you do') || lower.includes('help me') || lower.includes('how can you help')) {
+        // What can you do / help
+        if (lower.includes('what can you do') || lower.includes('how can you help') || lower.includes('what can you help') || lower.includes('how do i use') || lower.includes('capabilities')) {
           return {
-            text: `Here's what I can help you with:\n\n• Search and explore ${exps.length} microgravity fire research investigations\n• Explain experiment conditions — oxygen levels, airflow speeds, fuel types, and flame behavior\n• Compare different experiments (e.g., Saffire-IV vs. Saffire-V)\n• Discuss how fire behaves differently in zero gravity — cool flames, flame spread, extinction\n• Provide findings with source references and citations\n\nTry asking me about a specific experiment, program, or concept!`,
+            text: `Here's what I can help you with:\n\n→ Search and explore ${exps.length} microgravity fire research investigations\n→ Explain experiment conditions — oxygen levels, airflow speeds, fuel types, and flame behavior\n→ Compare different experiments (e.g., Saffire-IV vs. Saffire-V)\n→ Discuss how fire behaves differently in zero gravity — cool flames, flame spread, extinction\n→ Explain the research programs: Saffire, BASS, FLEX, SoFIE, ACME, Smoke\n→ Provide findings with source references and NASA citations\n\nYou can also use the filter pills at the top of the dashboard to narrow experiments by program, or click any experiment card for its full details.\n\nTry asking me about a specific experiment, program, or concept!`,
+            sources: []
+          };
+        }
+
+        if (lower.includes('help me')) {
+          return {
+            text: `Of course! I'm here to help you explore NASA's microgravity fire safety research. Here are some things you can ask me:\n\n→ "Tell me about Saffire experiments"\n→ "How does airflow affect flame spread in microgravity?"\n→ "Compare Saffire-IV and Saffire-V"\n→ "What are cool flames?"\n→ "How does oxygen level affect fire danger in spacecraft?"\n\nOr try the quick-action buttons below for instant answers on common topics!`,
             sources: []
           };
         }
 
         if (lower.includes('how are you') || lower.includes('sup') || lower.includes("what's up")) {
           return {
-            text: `I'm doing great, thanks for asking! I'm ready to help you explore microgravity fire safety research. Got any questions about spacecraft combustion experiments?`,
+            text: `I'm doing great, thanks for asking! 🔥 I'm ready to help you explore microgravity fire safety research. We have ${exps.length} investigations loaded — got any questions about spacecraft combustion experiments?`,
             sources: []
           };
         }
 
-        if (lower.includes('thank') || lower.includes('awesome') || lower.includes('great job') || lower.includes('nice') || lower.includes('cool')) {
+        if (lower.includes('thank') || lower.includes('awesome') || lower.includes('great job') || lower.includes('nice work')) {
           return {
             text: `You're welcome! Happy to help. Feel free to ask me anything else about microgravity fire research. 🔥`,
             sources: []
@@ -933,9 +993,9 @@
           };
         }
 
-        if (lower.includes('who made you') || lower.includes('who built you') || lower.includes('who created you')) {
+        if (lower.includes('who made you') || lower.includes('who built you') || lower.includes('who created you') || lower.includes('off_script') || lower.includes('off script') || lower.includes('your team')) {
           return {
-            text: `I was created by team Off_Script for the NASA App Development Challenge. Our mission is to make microgravity fire safety research accessible to researchers and engineers working on future spacecraft and habitats.`,
+            text: `I was created by team Off_Script for the NASA App Development Challenge. Our mission is to make microgravity fire safety research accessible and intelligent for researchers and engineers working on future spacecraft and habitats.\n\nThe IGNIS dashboard synthesizes data from NASA's Physical Sciences Informatics (PSI) database and published research papers into an interactive, AI-powered research tool.`,
             sources: []
           };
         }
@@ -1109,7 +1169,8 @@
               />
               <ScatterPlotCard 
                 chartData={chartData} 
-                setSelectedExp={setSelectedExp} 
+                setSelectedExp={setSelectedExp}
+                filter={filter}
               />
             </div>
 

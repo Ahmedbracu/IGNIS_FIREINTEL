@@ -122,9 +122,17 @@ function isConversational(q) {
     'goodbye', 'see you', 'great job', 'awesome', 'nice', 'cool', 'ok', 'okay',
     'what is this', 'what\'s this', 'what does this do', 'what is this web', 'what\'s this web',
     'what is this website', 'what is this app', 'what is this about', 'how can you help',
-    'what can you help', 'what do you know', 'are you ai', 'are you a bot', 'are you real'];
+    'what can you help', 'what do you know', 'are you ai', 'are you a bot', 'are you real',
+    'what does this web', 'what this web', 'what this app', 'what does this app',
+    'how does this work', 'explain this', 'purpose of this', 'describe this',
+    'tell me about this', 'what does ignis'];
   if (greetings.some(g => lower === g || lower === g + '!' || lower === g + '.')) return true;
   if (meta.some(m => lower.includes(m))) return true;
+  // Regex patterns for web/app/dashboard questions
+  if (/what.*(this|the).*(web|app|site|dashboard|page|tool|platform)/i.test(q)) return true;
+  if (/what.*(ignis|this).*(do|does|about|for)/i.test(q)) return true;
+  if (/how.*(this|ignis).*(work|help|use)/i.test(q)) return true;
+  if (/asked.*(web|app|this|about)/i.test(q)) return true;
   // Very short queries with no technical terms
   if (lower.split(/\s+/).length <= 3 && !lower.match(/flame|fire|o2|oxygen|airflow|pmma|sibal|saffire|bass|flex|sofie|acme|spread|burn|ignit|extinct|smoke|fuel|microgravity|combustion|material|droplet|cool\s*flame/)) return true;
   return false;
