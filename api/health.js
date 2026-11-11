@@ -5,4 +5,4 @@ const count = f => { try { return JSON.parse(fs.readFileSync(path.join(__dirname
 module.exports = (req, res) => res.json({
   ok: true, node: process.version,
   embeddings_json_records: count('embeddings.json'), investigations_json_records: count('investigations.json'),
-  env_IGNIS_set: !!process.env.IGNIS, model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite (default)' });
+  env_IGNIS_set: !!process.env.IGNIS, model: process.env.GEMINI_MODEL || 'gemini-1.5-flash (default)' });

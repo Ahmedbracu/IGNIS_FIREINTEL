@@ -6,8 +6,8 @@ const load = f => { try { return JSON.parse(fs.readFileSync(path.join(root, f), 
 try { require('../embeddings.json'); } catch (e) {} try { require('../investigations.json'); } catch (e) {} // lets Vercel bundle both files
 
 const KEY = process.env.IGNIS;                                            // Gemini key (Vercel env variable)
-const TEXT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite';
-const EMBED_MODEL = 'gemini-embedding-001', DIM = 768, K = 5;
+const TEXT_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+const EMBED_MODEL = 'text-embedding-004', DIM = 768, K = 5;
 const BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 const cache = new Map();
 
@@ -201,8 +201,9 @@ module.exports = async (req, res) => {
     if (answer && !isConversational(question)) cache.set(ck, out);
     res.json(out);
   } catch (err) {
-    console.error(err.message);
+    console.error('chat error:', err.message);
     const status = parseInt(err.message, 10) || 500;
-    res.status(status === 429 ? 429 : 500).json({ error: 'llm_failed', status });
+    // Surface the actual error detail so frontend can distinguish 404 (bad model) vs 429 (quota) vs 500
+    res.status(status === 429 ? 429 : 500).json({ error: 'llm_failed', status, detail: err.message.slice(0, 200) });
   }
 };
