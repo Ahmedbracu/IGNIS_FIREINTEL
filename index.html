@@ -314,7 +314,7 @@
               {['ALL', 'Saffire', 'BASS', 'FLEX', 'SoFIE', 'ACME', 'Smoke'].map((prog) => (
                 <button
                   key={prog}
-                  onClick={() => setFilter(prog)}
+                  onClick={() => { setFilter(prog); setHighlightedIds([]); setGraphNote(null); }}
                   className={`px-3 py-1 rounded-full transition-all ${
                     filter === prog 
                       ? 'bg-black text-white' 
@@ -401,7 +401,7 @@
       );
     }
 
-    function ScatterPlotCard({ chartData, setSelectedExp, filter }) {
+    function ScatterPlotCard({ chartData, setSelectedExp, filter, graphNote, highlightedIds }) {
       const programInfo = {
         'BASS': { label: 'BASS (Burning and Suppression of Solids)', desc: 'Studies flame spread over thin fuels and material flammability on ISS. Measures flame appearance, ignition, and suppression — not continuous airflow vs. flame-length curves.' },
         'FLEX': { label: 'FLEX (Droplet Combustion)', desc: 'Studies isolated fuel-droplet burning and cool-flame phenomena in microgravity using the MDCA apparatus. Measures droplet diameter and burning rate, not airflow propagation.' },
@@ -495,12 +495,16 @@
                 >
                   {chartData.map((entry, index) => {
                     const style = getPopStyle(entry.z);
+                    const isHighlighted = highlightedIds && highlightedIds.length > 0
+                      ? highlightedIds.includes(entry.item.id)
+                      : true;
                     return (
                       <Cell 
                         key={`cell-${index}`} 
-                        fill={style.chartFill} 
-                        stroke="#000000" 
-                        strokeWidth={2} 
+                        fill={isHighlighted ? style.chartFill : '#CCCCCC'} 
+                        stroke={isHighlighted ? '#000000' : '#AAAAAA'} 
+                        strokeWidth={isHighlighted ? 2.5 : 1} 
+                        opacity={isHighlighted ? 1 : 0.35}
                       />
                     );
                   })}
@@ -509,6 +513,12 @@
             </ResponsiveContainer>
             )}
           </div>
+          {graphNote && (
+            <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-popyellow border-2 border-black rounded-xl shadow-pop-sm">
+              <FireSparkleIcon className="w-4 h-4 text-black flex-shrink-0" />
+              <span className="text-xs font-black text-black">{graphNote}</span>
+            </div>
+          )}
         </div>
       );
     }
@@ -740,7 +750,18 @@
                       <span className="text-[10px] font-black text-black uppercase">IGNIS</span>
                     </div>
                   )}
-                  <p className="whitespace-pre-line">{msg.text}</p>
+                  {msg.isThinking ? (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-slate-500 italic">Thinking</span>
+                      <span className="flex gap-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{animationDelay:'0ms'}}></span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{animationDelay:'150ms'}}></span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{animationDelay:'300ms'}}></span>
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="whitespace-pre-line">{msg.text}</p>
+                  )}
                   {msg.sources && msg.sources.length > 0 && (
                     <div className="pt-1.5 mt-1.5 border-t border-black/10">
                       <span className="text-[10px] font-black text-slate-500 uppercase">Sources: </span>
@@ -782,6 +803,48 @@
             >
               <DropletIcon className="w-3.5 h-3.5 text-indigo-700" />
               <span>O₂ Effects</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("Why does fire behave differently in space?")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-popgreen border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <RocketIcon className="w-3.5 h-3.5 text-emerald-800" />
+              <span>Space Fire</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("What is the Saffire program?")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-cream-200 border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <SunIcon className="w-3.5 h-3.5 text-orange-700" />
+              <span>Saffire</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("Compare Saffire BASS and FLEX programs")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-pink-100 border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <WindIcon className="w-3.5 h-3.5 text-pink-700" />
+              <span>All Programs</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("What does the chart show? Explain the scatter plot.")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-blue-100 border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <SearchIcon className="w-3.5 h-3.5 text-blue-700" />
+              <span>Read the Chart</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("What is the BASS experiment?")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-orange-100 border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <ShieldAlertIcon className="w-3.5 h-3.5 text-orange-700" />
+              <span>BASS</span>
+            </button>
+            <button 
+              onClick={() => triggerMove("Why does fire safety in spacecraft matter?")}
+              className="pop-btn text-[11px] font-bold px-3 py-1 rounded-full bg-red-100 border-2 border-black shadow-pop-sm flex items-center gap-1.5 text-black"
+            >
+              <FlameIcon className="w-3.5 h-3.5 text-red-700" />
+              <span>Fire Risk</span>
             </button>
           </div>
 
@@ -834,6 +897,294 @@
       );
     }
 
+    // ─── HARD-CODED DEMO Q&A DATABASE ──────────────────────────────────────────
+    // Each entry: { triggers[], answer, graphHighlight? }
+    // graphHighlight can be: { ids[], focusFilter, chartNote }
+    const DEMO_QA = [
+      {
+        // Q1 — Airflow & flame spread
+        triggers: ['airflow', 'flame spread', 'how does airflow', 'affect flame'],
+        answer: `🔥 Great question! Think of airflow like blowing on a campfire — but in space it works a little differently.
+
+On Earth, hot air naturally rises (that's convection), which feeds oxygen to a flame. In space there's no gravity pulling things down, so hot air goes nowhere. That means fire in microgravity is totally dependent on the ventilation fans to get fresh oxygen.
+
+Here's what the Saffire experiments showed us:
+
+📊 Low airflow (5–10 cm/s) → Flames stay small and can self-extinguish
+📊 Medium airflow (15–20 cm/s) → Flames reach a steady size (~4 cm long) and keep burning
+📊 High airflow (25–30 cm/s) → Flames grow larger and spread faster (~10 mm/s)
+
+The scatter chart below shows this relationship — the further right a dot is, the faster the airflow; the higher the dot, the faster the flame spread. See how they go up together?
+
+🚀 Why it matters for spacecraft: If a fire breaks out on the ISS, engineers can slow it down by reducing fan speed — cutting off the oxygen supply!`,
+        graphHighlight: { ids: ['SAFFIRE-I', 'SAFFIRE-IV', 'SAFFIRE-V', 'SAFFIRE-VI'], focusFilter: 'Saffire', chartNote: 'Highlighting Saffire airflow vs. flame spread data' }
+      },
+      {
+        // Q2 — Compare Saffire-IV and Saffire-V
+        triggers: ['compare saffire-iv and saffire-v', 'saffire iv vs saffire v', 'saffire 4 vs saffire 5', 'compare saffire iv', 'saffire-iv and saffire-v'],
+        answer: `Let's put Saffire-IV and Saffire-V side by side — like comparing two science lab experiments! 🔬
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ SAFFIRE-IV  (Cygnus OA-8, 2017)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Fuel: SIBAL fabric (same cotton/fiberglass cloth as Saffire-I)
+• O₂ level: 21% — same as normal Earth air
+• Airflow: 20 cm/s (like a gentle breeze)
+• Flame length: ~4 cm, steady
+• Goal: Repeat Saffire-I to confirm results & test new sensors
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ SAFFIRE-V  (Cygnus OA-9, 2018)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Fuel: PMMA (plexiglass, same stuff as aquarium glass!)
+• O₂ level: 21%
+• Airflow: 20 cm/s
+• Flame length: ~6 cm — 50% bigger than fabric!
+• Goal: Test a totally different material to see how shape & chemistry change fire
+
+🔑 KEY DIFFERENCE: The material matters a ton! Acrylic plastic burns hotter and longer than the fabric. This tells engineers which materials are more dangerous inside a spacecraft.
+
+Both dots appear on the chart below — notice Saffire-V is higher up (larger flame) even at the same airflow speed!`,
+        graphHighlight: { ids: ['SAFFIRE-IV', 'SAFFIRE-V'], focusFilter: 'Saffire', chartNote: 'Comparing Saffire-IV vs Saffire-V on the chart' }
+      },
+      {
+        // Q3 — Cool flames
+        triggers: ['cool flame', 'what are cool flames', 'cool flames matter', 'invisible fire'],
+        answer: `Cool flames sound like a superhero power — and honestly, they kind of are! 🕶️🔥
+
+Normally when something burns, we see a hot orange/yellow flame. But "cool flames" are a weird type of fire that:
+
+🌡️ Burn at only 400–600°C (normal flames are 1000–2000°C)
+👁️ Are completely INVISIBLE — you literally cannot see them!
+🏃 Can keep burning even after a normal flame goes out
+
+The FLEX experiments (droplet combustion) discovered this by burning tiny fuel droplets floating in zero-gravity. The normal flame went out, but the droplet kept slowly shrinking — meaning it was still burning invisibly!
+
+━━━━━━━━━━━━
+Why is this dangerous in space? 🚀
+━━━━━━━━━━━━
+Imagine you think a fire is out, but it's secretly still burning at a low temperature — invisible, hidden, and slowly releasing fuel vapor. That vapor can then ignite into a bigger fire later.
+
+The good news: NASA's ACME and FLEX research is helping scientists understand cool flames so spacecraft smoke detectors and suppression systems can be designed to catch them.
+
+(The chart doesn't directly plot cool flame data since it's droplet-based research, but FLEX experiments are in the sidebar list!)`,
+        graphHighlight: { ids: [], focusFilter: 'ALL', chartNote: null }
+      },
+      {
+        // Q4 — Oxygen effects
+        triggers: ['oxygen level', 'o2', 'oxygen affect fire', 'how does oxygen', 'flammability limit', 'limiting oxygen'],
+        answer: `Oxygen is basically fire's food! 🍽️🔥 More oxygen = more fire. Less oxygen = fire slows down and dies.
+
+Here's how scientists measure it — they use something called the LOC (Limiting Oxygen Concentration):
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📉 LOC in Microgravity = ~18–19% O₂
+📉 LOC on Earth (normal gravity) = ~16–17% O₂
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Wait — it's actually HARDER to burn things in space? Sort of! 🤔
+
+Here's why: On Earth, gravity pulls cool air down, which keeps pulling fresh oxygen to the flame. In space, that automatic "refueling" doesn't happen. So the flame has to work harder to get oxygen, meaning it needs MORE of it in the air to stay alive.
+
+The SoFIE experiments on the ISS are specifically testing different materials at different oxygen levels to find exactly when fires start and stop (ignition & extinction limits).
+
+🚨 Real consequence: The ISS keeps its atmosphere at exactly 21% O₂ — normal Earth air. If that ever creeps up (say, from an oxygen leak), the fire risk goes way up. Everything becomes easier to ignite!`,
+        graphHighlight: { ids: ['SOFIE-MIST-1', 'SOFIE-MIST-2', 'BASS-I', 'BASS-II'], focusFilter: 'ALL', chartNote: 'O₂ effects shown across experiments' }
+      },
+      {
+        // Q5 — Why does fire behave differently in space
+        triggers: ['why does fire', 'fire different in space', 'fire in space', 'space fire', 'microgravity fire', 'zero gravity fire', 'how does fire work in space'],
+        answer: `Awesome question — space fire is genuinely wild! 🌌🔥
+
+On Earth, gravity does a LOT of work for a fire:
+1️⃣ Hot gases rise (convection), pulling fresh oxygen in from below
+2️⃣ The flame gets pushed into a tall teardrop shape pointing up
+3️⃣ Soot (the black smoke particles) gets pushed upward too
+
+In space, NONE of that happens. Here's what changes:
+
+🔵 Shape: Flames become spherical (ball-shaped!) — they expand in all directions equally
+🔵 Color: Often blue or pale — less soot, different chemistry
+🔵 Size: Usually smaller and quieter, but can spread across more surface area
+🔵 Invisible risk: "Cool flames" can burn without being visible (see the Cool Flames question!)
+🔵 Oxygen supply: Entirely dependent on fans — no airflow = fire dies OR smolders invisibly
+
+The first time humans ever saw a large fire burn in space was the Saffire-I experiment in 2016 — and they burned a piece of cloth the size of a yoga mat on an unmanned Cygnus cargo ship! 🛸
+
+This research helps NASA design better:
+→ Fire detectors (need to catch invisible cool flames)
+→ Suppression systems (CO₂ works differently in microgravity)
+→ Material choices (which fabrics and plastics to avoid on future missions)`,
+        graphHighlight: { ids: ['SAFFIRE-I', 'SAFFIRE-IV', 'SAFFIRE-V', 'SAFFIRE-VI'], focusFilter: 'Saffire', chartNote: 'Saffire experiments: how fire behaves in microgravity' }
+      },
+      {
+        // Q6 — What is the Saffire program
+        triggers: ['what is saffire', 'tell me about saffire', 'saffire program', 'saffire experiments'],
+        answer: `Saffire stands for Spacecraft Fire Safety (Saffire) — and it's one of the most dramatic experiments NASA has ever run! 🚀🔥
+
+Here's the setup: You can't set a big fire on the ISS (too dangerous with people on board). So NASA hitched a ride on empty Cygnus cargo ships on their way to burn up in Earth's atmosphere. After delivery, while the ship was flying away from the ISS — they lit a fire inside!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 Saffire Program Summary:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Saffire-I (2016) — SIBAL fabric, 41×94 cm, 20 cm/s airflow → 4 cm steady flame
+• Saffire-II (2016) — 9 small material samples (PMMA, fabric, Nomex, wire insulation)
+• Saffire-III (2017) — Repeat of Saffire-I with better sensors
+• Saffire-IV (2017) — SIBAL fabric again, improved diagnostics
+• Saffire-V (2018) — PMMA (plexiglass), larger & hotter flames observed
+• Saffire-VI (2020) — Advanced sample sets, extinction tests
+
+🏆 Biggest discoveries:
+→ Flames in microgravity reach a STEADY SIZE (don't keep growing like on Earth)
+→ Fire spread is controlled by airflow speed, not gravity
+→ Plexiglass burns bigger than fabric at same conditions
+→ Fire can survive in lower oxygen than expected
+
+The chart below shows Saffire experiments as dots — higher dots = more flame, further right = more airflow!`,
+        graphHighlight: { ids: ['SAFFIRE-I', 'SAFFIRE-II', 'SAFFIRE-III', 'SAFFIRE-IV', 'SAFFIRE-V', 'SAFFIRE-VI'], focusFilter: 'Saffire', chartNote: 'All Saffire experiments highlighted' }
+      },
+      {
+        // Q7 — What is BASS
+        triggers: ['what is bass', 'bass experiment', 'burning and suppression', 'bass program'],
+        answer: `BASS stands for Burning And Suppression of Solids — a set of experiments done directly on the International Space Station! 🛸
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔬 What BASS studied:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• How thin solid materials (fabrics, rods) ignite in microgravity
+• Where the flammability limits are — how little oxygen can a fire survive on?
+• How CO₂ fire suppressant gas affects microgravity flames
+• Whether extinction patterns on Earth predict what happens in space
+
+🧪 Materials tested included:
+→ SIBAL fabric (cotton/fiberglass blend — the go-to spacecraft material)
+→ Acrylic rods (small-scale plastic burning)
+→ Various wire insulation materials (what's inside spacecraft wiring!)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔑 Key findings:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Flames in microgravity were often cooler and bluer than on Earth
+• CO₂ suppression was effective but needed higher concentrations than expected
+• Some materials that seem "safe" on Earth are actually more flammable in space!
+
+BASS used the Microgravity Science Glovebox (MSG) hardware — basically a sealed fireproof box where astronauts could safely run controlled burn tests onboard the ISS. 🧤`,
+        graphHighlight: { ids: ['BASS-I', 'BASS-II', 'BASS-RS'], focusFilter: 'BASS', chartNote: 'BASS experiments on ISS' }
+      },
+      {
+        // Q8 — Flame spread rate numbers / what does the chart show
+        triggers: ['what does the chart show', 'explain the chart', 'scatter plot', 'what does the graph', 'scatter chart', 'explain the graph', 'what are the dots'],
+        answer: `Great question — let me decode the chart for you! 📊
+
+The scatter plot (the bubble chart below) shows the relationship between two things:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📏 X-axis (left → right): Airflow speed in cm/s
+   Low = slower fan, less oxygen reaching flame
+   High = faster fan, more oxygen, bigger risk
+
+📏 Y-axis (bottom → top): Flame spread or length in mm/s or cm
+   Low = small, controlled flame
+   High = large, spreading fire = more dangerous!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎨 Dot colors:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🟢 Green (Teal) = NOMINAL — low risk, fire behaving safely
+🟡 Yellow = ELEVATED — medium risk, needs monitoring
+🔴 Red = CRITICAL — high risk, rapid fire spread!
+
+🔵 Dot size = risk score (bigger dot = higher calculated risk)
+
+You can click any dot to load that experiment's full details in the right panel! 
+
+The data is from real NASA experiments — mostly the Saffire program which ran on empty Cygnus cargo ships. Each dot is one actual fire test that happened in space. 🚀`,
+        graphHighlight: { ids: ['SAFFIRE-I', 'SAFFIRE-IV', 'SAFFIRE-V', 'SAFFIRE-VI'], focusFilter: 'Saffire', chartNote: 'All plotted experiments explained' }
+      },
+      {
+        // Q9 — Compare 3 things: Saffire vs BASS vs FLEX
+        triggers: ['compare saffire bass flex', 'saffire vs bass', 'difference between programs', 'compare programs', 'saffire bass and flex', 'what are the different programs', 'programs difference'],
+        answer: `Here's your ultimate cheat sheet comparing the three main NASA fire programs! 📋
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🛸 SAFFIRE — Large-Scale Fire Tests
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 Where: Unmanned Cygnus cargo ships
+🔥 What burns: Big fabric/plastic sheets (up to 94 cm long!)
+🎯 Goal: See how LARGE fires start, spread, and behave in microgravity
+✅ Scale: Vehicle-scale — simulates a real spacecraft fire scenario
+📊 Data: Airflow speed, flame spread rate, temperature — perfect for the chart!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧤 BASS — Small Tests on ISS (with Astronauts!)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 Where: MSG (fireproof glovebox) on the ISS
+🔥 What burns: Small fabric strips, rods, wire insulation
+🎯 Goal: Find flammability LIMITS — min oxygen, max CO₂ to kill a fire
+✅ Scale: Small/controlled — astronauts run it safely inside a sealed box
+📊 Data: Ignition/extinction conditions, suppression effectiveness
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💧 FLEX — Droplet Combustion (Really Small!)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 Where: CIR (Combustion Integrated Rack) on ISS
+🔥 What burns: Tiny fuel droplets (heptane, methanol) floating in air
+🎯 Goal: Understand droplet burning, cool flames, soot formation
+✅ Scale: Microscale — mm-sized droplets, super precise measurements
+📊 Data: Droplet size over time, burning rate, invisible cool flame detection
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔑 Bottom line:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Saffire = "What happens if a real fire breaks out?"
+BASS = "What materials catch fire, and how do we put it out?"
+FLEX = "What is the fundamental chemistry of space fire?"`,
+        graphHighlight: { ids: ['SAFFIRE-I', 'SAFFIRE-IV', 'BASS-I', 'BASS-II'], focusFilter: 'ALL', chartNote: 'Multi-program comparison — all data visible' }
+      },
+      {
+        // Q10 — Fire safety / why this matters / spacecraft safety
+        triggers: ['fire safety', 'spacecraft safety', 'why does this matter', 'danger in space', 'fire on iss', 'fire on the iss', 'fire in spacecraft', 'fire risk', 'fire danger'],
+        answer: `Fire in space is one of the most serious emergencies an astronaut can face — and here's why it's so much scarier than a fire on Earth! 😨🔥
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+😰 Why space fires are terrifying:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. No escape hatch — Astronauts can't just "run outside." They're in a sealed metal can in the vacuum of space.
+2. Limited air supply — They share the same oxygen with the fire. Every second it burns, they have less to breathe.
+3. Toxic smoke — Burning materials release CO and soot that fill the enclosed cabin fast.
+4. Invisible flames — Cool flames can burn without anyone seeing them (discovered by FLEX experiments!).
+5. Gravity doesn't help — On Earth, smoke rises toward the ceiling. In space, smoke goes everywhere at once — straight into lungs.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏥 Real incidents in history:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 1997 — Mir Space Station fire from an oxygen-generating canister burning for 90 seconds! Crew couldn't see, air was smoky, Soyuz escape pod was blocked.
+• Apollo 1, 1967 — A pure oxygen atmosphere caused a catastrophic fire during ground testing.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ What IGNIS research helps build:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+→ Better fire detectors (that sense cool flames + unusual particles)
+→ Safer materials (tested by BASS & Saffire — no easily-flammable plastics!)
+→ Smarter suppression (CO₂ dosage tested in microgravity by BASS)
+→ Emergency protocols (airflow control = your best first defense!)
+
+The chart below shows risk levels for different experiment conditions. Red dots = conditions where fire spreads fastest. That data directly informs what materials are allowed on the ISS and future Moon/Mars missions. 🌙🔴`,
+        graphHighlight: { ids: ['SAFFIRE-V', 'SAFFIRE-VI', 'SAFFIRE-IV'], focusFilter: 'Saffire', chartNote: 'Highest-risk experiments highlighted in red' }
+      }
+    ];
+
+    // Helper: check if a user query matches a demo entry
+    function matchDemoQA(query) {
+      const lower = query.toLowerCase();
+      for (const entry of DEMO_QA) {
+        for (const trigger of entry.triggers) {
+          if (lower.includes(trigger)) return entry;
+        }
+      }
+      return null;
+    }
+
     function App() {
       const [experiments, setExperiments] = useState(DEFAULT_EXPERIMENTS);
       const [search, setSearch] = useState('');
@@ -841,6 +1192,8 @@
       const [selectedExp, setSelectedExp] = useState(DEFAULT_EXPERIMENTS[0]);
       const [question, setQuestion] = useState('');
       const [isQuerying, setIsQuerying] = useState(false);
+      const [graphNote, setGraphNote] = useState(null);
+      const [highlightedIds, setHighlightedIds] = useState([]);
       const [chatMessages, setChatMessages] = useState([
         {
           role: 'assistant',
@@ -882,9 +1235,10 @@
           x: Number(item.airflow_cms) || 0,
           y: Number(item.flame_spread_rate_mms) || 0,
           z: calculateRisk(item),
-          item: item
+          item: item,
+          highlighted: highlightedIds.length === 0 || highlightedIds.includes(item.id)
         }));
-      }, [filteredList]);
+      }, [filteredList, highlightedIds]);
 
       // ---------- Smart local search for offline fallback ----------
       function localSearch(q, exps) {
@@ -1090,6 +1444,51 @@
         setChatMessages(prev => [...prev, userMsg]);
         setIsQuerying(true);
 
+        // ── CHECK HARD-CODED DEMO Q&A FIRST ─────────────────────────────────
+        const demoMatch = matchDemoQA(q);
+        if (demoMatch) {
+          // Show "thinking..." bubble immediately
+          const thinkingId = Date.now();
+          setChatMessages(prev => [...prev, {
+            role: 'assistant',
+            text: '🤔 Thinking...',
+            isThinking: true,
+            id: thinkingId,
+            sources: []
+          }]);
+
+          // Realistic 1.6-second thinking delay
+          await new Promise(r => setTimeout(r, 1600));
+
+          // Apply graph highlight if present
+          if (demoMatch.graphHighlight) {
+            const { ids, focusFilter, chartNote } = demoMatch.graphHighlight;
+            if (focusFilter && focusFilter !== 'ALL') setFilter(focusFilter);
+            setHighlightedIds(ids || []);
+            setGraphNote(chartNote || null);
+          }
+
+          // Replace thinking bubble with real answer
+          setChatMessages(prev =>
+            prev.filter(m => !m.isThinking).concat([{
+              role: 'assistant',
+              text: demoMatch.answer,
+              sources: []
+            }])
+          );
+          setIsQuerying(false);
+          return;
+        }
+        // ────────────────────────────────────────────────────────────────────
+
+        // Show thinking for backend/local fallback too
+        setChatMessages(prev => [...prev, {
+          role: 'assistant',
+          text: '🤔 Thinking...',
+          isThinking: true,
+          sources: []
+        }]);
+
         try {
           // Build history from recent messages for context
           const recentHistory = chatMessages.slice(-6).map(m => ({
@@ -1106,11 +1505,13 @@
           if (res.ok) {
             const data = await res.json();
             if (data.answer) {
-              setChatMessages(prev => [...prev, {
-                role: 'assistant',
-                text: data.answer,
-                sources: data.sources || []
-              }]);
+              setChatMessages(prev =>
+                prev.filter(m => !m.isThinking).concat([{
+                  role: 'assistant',
+                  text: data.answer,
+                  sources: data.sources || []
+                }])
+              );
               setIsQuerying(false);
               return;
             }
@@ -1120,12 +1521,15 @@
         }
 
         // Smart local fallback using loaded experiments data
+        await new Promise(r => setTimeout(r, 900));
         const localResult = buildLocalAnswer(q, experiments);
-        setChatMessages(prev => [...prev, {
-          role: 'assistant',
-          text: localResult.text,
-          sources: localResult.sources
-        }]);
+        setChatMessages(prev =>
+          prev.filter(m => !m.isThinking).concat([{
+            role: 'assistant',
+            text: localResult.text,
+            sources: localResult.sources
+          }])
+        );
         setIsQuerying(false);
       };
 
@@ -1145,7 +1549,7 @@
         <div className="max-w-[1340px] mx-auto px-4 py-8 md:px-8">
           <Header 
             filter={filter} 
-            setFilter={setFilter} 
+            setFilter={(f) => { setFilter(f); setHighlightedIds([]); setGraphNote(null); }} 
             onTriggerAi={() => {
               processQuery("Give me a quick overview of fire safety research in microgravity.");
             }}
@@ -1171,6 +1575,8 @@
                 chartData={chartData} 
                 setSelectedExp={setSelectedExp}
                 filter={filter}
+                graphNote={graphNote}
+                highlightedIds={highlightedIds}
               />
             </div>
 

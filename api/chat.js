@@ -6,9 +6,10 @@ const load = f => { try { return JSON.parse(fs.readFileSync(path.join(root, f), 
 try { require('../embeddings.json'); } catch (e) {} try { require('../investigations.json'); } catch (e) {} // lets Vercel bundle both files
 
 const KEY = process.env.IGNIS;                                            // Gemini key (Vercel env variable)
-const TEXT_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+const TEXT_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 const EMBED_MODEL = 'text-embedding-004', DIM = 768, K = 5;
-const BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const BASE = 'https://generativelanguage.googleapis.com/v1/models';
+const BASE_BETA = 'https://generativelanguage.googleapis.com/v1beta/models';
 const cache = new Map();
 
 // ---------- Data Loading ----------
