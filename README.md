@@ -1,4 +1,4 @@
-# IGNIS FireIntel Dashboard — Microgravity Fire Safety & Combustion Intelligence 
+# IGNIS FireIntel Dashboard - Microgravity Fire Safety & Combustion Intelligence 
 
 ## Overview
 
