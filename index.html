@@ -715,9 +715,11 @@
     }
 
     function AiCopilotCard({ chatMessages, question, setQuestion, handleAsk, triggerMove, isQuerying }) {
-      const chatEndRef = React.useRef(null);
+      const chatContainerRef = React.useRef(null);
       useEffect(() => {
-        if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
       }, [chatMessages]);
       return (
         <div className="bg-white p-6 rounded-3xl border-2 border-black shadow-pop flex flex-col">
@@ -735,8 +737,8 @@
             )}
           </div>
 
-          {/* Chat Messages — shrinks to fit content, scrolls when it gets long */}
-          <div className="bg-cream-100 rounded-2xl p-4 border-2 border-black mb-3 overflow-y-auto space-y-3" style={{ maxHeight: chatMessages.length <= 2 ? 'none' : '340px' }}>
+          {/* Chat Messages — fixed height, scrolls internally only */}
+          <div ref={chatContainerRef} className="bg-cream-100 rounded-2xl p-4 border-2 border-black mb-3 overflow-y-auto space-y-3" style={{ height: '320px' }}>
             {chatMessages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs font-medium leading-relaxed ${
@@ -771,7 +773,6 @@
                 </div>
               </div>
             ))}
-            <div ref={chatEndRef} />
           </div>
 
           {/* Quick-action Pills */}
