@@ -871,6 +871,12 @@
       );
     }
 
+    const YoutubeIcon = ({ className = "w-4 h-4" }) => (
+      <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+      </svg>
+    );
+
     function Footer() {
       return (
         <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 pt-6 border-t-2 border-black/10">
@@ -881,16 +887,13 @@
           </div>
 
           <div className="flex items-center gap-2">
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="X (Twitter)">
-              <TwitterIcon className="w-3.5 h-3.5 text-black" />
+            <a href="https://youtube.com/@auraminusinfinity27?si=yu32M7cxuTe-qWU2" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="YouTube">
+              <YoutubeIcon className="w-3.5 h-3.5 text-black" />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="LinkedIn">
-              <LinkedinIcon className="w-3.5 h-3.5 text-black" />
-            </a>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="GitHub">
+            <a href="https://github.com/Ahmedbracu/IGNIS_FIREINTEL" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="GitHub">
               <GithubIcon className="w-3.5 h-3.5 text-black" />
             </a>
-            <a href="mailto:contact@nasa.gov" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="Contact Email">
+            <a href="mailto:ahmedabubakar.official@gmail.com" className="w-8 h-8 rounded-full border-2 border-black bg-white flex items-center justify-center shadow-pop-sm hover:bg-popyellow transition-colors" title="Contact Email">
               <MailIcon className="w-3.5 h-3.5 text-black" />
             </a>
           </div>
